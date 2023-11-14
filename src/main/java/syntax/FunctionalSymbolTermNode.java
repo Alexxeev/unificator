@@ -1,5 +1,7 @@
 package syntax;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -13,60 +15,78 @@ import java.util.Set;
  * a functional symbol of non-zero arity
  * and a list of child terms.
  */
-final class FunctionalSymbolTermNode extends AbstractTermNode implements TermNode {
+public final class FunctionalSymbolTermNode extends TermNode {
     private final List<TermNode> children = new ArrayList<>();
 
     /**
      * Creates a functional symbol term node with provided name.
      * @param name name of the functional symbol
      */
-    public FunctionalSymbolTermNode(final String name) {
+    public FunctionalSymbolTermNode(final @NotNull String name) {
         super(name);
     }
 
     @Override
     public Set<String> getDomain() {
-        Iterator<TermNode> termNodeIterator = new PreOrderTermIterator(
+        Iterator<TermNode> termNodeIterator = new TermIterator(
                 this
         );
         Set<String> domain = new HashSet<>();
         while (termNodeIterator.hasNext()) {
             TermNode termNode = termNodeIterator.next();
-            if (termNode.getTermType() == TermNode.Type.VARIABLE) {
+            if (termNode instanceof VariableTermNode) {
                 domain.add(termNode.getName());
             }
         }
         return domain;
     }
 
-    @Override
-    public TermNode.Type getTermType() {
-        return TermNode.Type.FUNCTIONAL_SYMBOL;
+    /**
+     * Adds a list of terms to the children list of this node
+     * to the end of the children list.
+     *
+     * @param nodes list of nodes
+     */
+    public void addChildren(@NotNull List<TermNode> nodes) {
+        children.addAll(Objects.requireNonNull(nodes));
     }
 
-    @Override
-    public void addChildren(List<TermNode> nodes) {
-        children.addAll(nodes);
-    }
-
-    @Override
+    /**
+     * Returns a list that contains children nodes of this node.
+     * Note that returned list is immutable.
+     *
+     * @return immutable list of children term nodes
+     */
     public List<TermNode> getChildren() {
         return Collections.unmodifiableList(children);
     }
 
-    @Override
-    public void prependChild(final TermNode term) {
+    /**
+     * Inserts the specified term node as a child node
+     * in the beginning of the child node list.
+     *
+     * @param term node to be inserted.
+     */
+    public void prependChild(final @NotNull TermNode term) {
         children.add(0, Objects.requireNonNull(term));
     }
 
-    @Override
-    public void setChild(final int index, final TermNode term) {
+    /**
+     * Replaces the element at the specified position in the child node list
+     * with the specified element.
+     *
+     * @param index index of child node to replace
+     * @param term child node to be stored at the specified position
+     * @throws IndexOutOfBoundsException if the index is out of range
+     *         ({@code index < 0 || index > size()})
+     */
+    public void setChild(final int index, final @NotNull TermNode term) {
         children.set(index, Objects.requireNonNull(term));
     }
 
     @Override
     public boolean isLeafNode() {
-        return false;
+        return getChildren().isEmpty();
     }
 
 }

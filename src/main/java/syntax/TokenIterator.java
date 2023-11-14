@@ -1,10 +1,13 @@
 package syntax;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.CharacterIterator;
 import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * This iterator allows to tokenize provided
@@ -77,8 +80,8 @@ class TokenIterator implements Iterator<Token> {
      * @param characterIterator character iterator of the input
      *                          formula
      */
-    public TokenIterator(CharacterIterator characterIterator) {
-        this.characterIterator = characterIterator;
+    public TokenIterator(final @NotNull CharacterIterator characterIterator) {
+        this.characterIterator = Objects.requireNonNull(characterIterator);
     }
 
     /**

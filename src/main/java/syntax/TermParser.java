@@ -2,7 +2,6 @@ package syntax;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +17,7 @@ final class TermParser {
      * @param tokenIterator a token iterator
      */
     TermParser(final @NotNull TokenIterator tokenIterator) {
-        this.tokenIterator = tokenIterator;
+        this.tokenIterator = Objects.requireNonNull(tokenIterator);
     }
 
     /**
@@ -61,8 +60,8 @@ final class TermParser {
             throw new IllegalArgumentException("Unexpected EOF while reading tokens");
         }
         TermNode term = TermNode.fromToken(tokenIterator.next());
-        if (term.getTermType() == TermNode.Type.FUNCTIONAL_SYMBOL) {
-            term.addChildren(parseArguments());
+        if (term instanceof FunctionalSymbolTermNode functionalSymbolTermNode) {
+            functionalSymbolTermNode.addChildren(parseArguments());
         }
         return term;
     }

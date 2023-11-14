@@ -1,16 +1,18 @@
 package syntax;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Set;
 
 /**
  * A representation of a constant term
  */
-final class ConstantTermNode extends LeafTermNode implements TermNode {
+public final class ConstantTermNode extends TermNode {
     /**
      * Creates a constant term node with provided name.
      * @param name name of the constant
      */
-    public ConstantTermNode(final String name) {
+    public ConstantTermNode(final @NotNull String name) {
         super(name);
     }
 
@@ -20,7 +22,7 @@ final class ConstantTermNode extends LeafTermNode implements TermNode {
     }
 
     @Override
-    public TermNode.Type getTermType() {
-        return TermNode.Type.CONSTANT;
+    public boolean isLeafNode() {
+        return true;
     }
 }

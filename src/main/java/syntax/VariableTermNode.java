@@ -1,16 +1,18 @@
 package syntax;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Set;
 
 /**
  * A representation of a variable term
  */
-final class VariableTermNode extends LeafTermNode implements TermNode {
+public final class VariableTermNode extends TermNode {
     /**
      * Creates a constant term node with provided name.
      * @param name name of the constant
      */
-    public VariableTermNode(final String name) {
+    public VariableTermNode(final @NotNull String name) {
         super(name);
     }
 
@@ -20,7 +22,9 @@ final class VariableTermNode extends LeafTermNode implements TermNode {
     }
 
     @Override
-    public TermNode.Type getTermType() {
-        return TermNode.Type.VARIABLE;
+    public boolean isLeafNode() {
+        return true;
     }
+
+
 }
