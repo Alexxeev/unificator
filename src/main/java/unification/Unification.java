@@ -13,20 +13,6 @@ import java.util.Objects;
  * Note that unification of arbitrary set of terms isn't implemented yet.
  */
 public final class Unification {
-    /**
-     * Represents a result of unification of input set.
-     * It contains status of unification (successful unification
-     * or term set is not unifiable) and unifier of the input set.
-     *
-     * @param isUnifiable true if input set is unifiable.
-     * @param unifier unifier of the input set if unifier is found.
-     *                It returns identity substitution
-     *                if input set is not unifiable.
-     */
-    public record UnificationResult(
-            boolean isUnifiable,
-            Substitution unifier
-    ) { }
 
     /**
      * A result of search for disagreement set for two terms

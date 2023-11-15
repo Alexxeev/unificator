@@ -1,5 +1,6 @@
 import syntax.TermNode;
 import unification.Unification;
+import unification.UnificationResult;
 
 /**
  * Console application main class
@@ -18,7 +19,7 @@ public class Main {
         TermNode term1 = TermNode.fromString(args[0]);
         TermNode term2 = TermNode.fromString(args[1]);
 
-        Unification.UnificationResult unificationResult = Unification.findUnifier(term1, term2);
+        UnificationResult unificationResult = Unification.findUnifier(term1, term2);
         if (unificationResult.isUnifiable()) {
             System.out.println("Found unifier for the terms:");
             System.out.println("- " + args[0]);
