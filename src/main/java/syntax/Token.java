@@ -19,7 +19,7 @@ record Token(
      */
     @Override
     public String toString() {
-        return String.format("%s%s", tokenType.getRelatedCharacter(), optionalIndex);
+        return String.format("%c%s", tokenType.relatedCharacter, optionalIndex);
     }
 
     /**
@@ -60,12 +60,5 @@ record Token(
             this.relatedCharacter = relatedCharacter;
         }
 
-        /**
-         * Returns character (or prefix) associated with this token type.
-         * @return String representation of the character
-         */
-        public String getRelatedCharacter() {
-            return String.valueOf(relatedCharacter);
-        }
     }
 }
