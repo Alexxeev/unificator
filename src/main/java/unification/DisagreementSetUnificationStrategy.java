@@ -1,5 +1,6 @@
 package unification;
 
+import org.jetbrains.annotations.NotNull;
 import syntax.TermIterator;
 import syntax.TermNode;
 import syntax.VariableTermNode;
@@ -12,7 +13,7 @@ import java.util.Objects;
  * operation on the pair of terms.
  * Note that unification of arbitrary set of terms isn't implemented yet.
  */
-public final class Unification {
+public final class DisagreementSetUnificationStrategy implements UnificationStrategy {
 
     /**
      * A result of search for disagreement set for two terms
@@ -56,12 +57,7 @@ public final class Unification {
         NO_DISAGREEMENT
     }
 
-    /**
-     * Do not instantiate this class
-     */
-    private Unification() {
-        throw new AssertionError("instantiating utility class");
-    }
+    public DisagreementSetUnificationStrategy() {}
 
     /**
      * Finds disagreement set for the two provided terms.
@@ -111,16 +107,9 @@ public final class Unification {
                 term1, term2, DisagreementStatus.NO_DISAGREEMENT);
     }
 
-    /**
-     * Finds a unifier of set of two terms.
-     * It uses Robinson unification algorithm to find the unifier
-     * of two terms.
-     *
-     * @param term1 first term
-     * @param term2 second term
-     * @return Result of unification of two terms.
-     */
-    public static UnificationResult findUnifier(final TermNode term1, final TermNode term2) {
+
+    @Override
+    public UnificationResult findUnifier(final @NotNull TermNode term1, final @NotNull TermNode term2) {
         TermNode modifiedTerm1 = Objects.requireNonNull(term1);
         TermNode modifiedTerm2 = Objects.requireNonNull(term2);
         Substitution substitution = Substitution.identity();

@@ -17,7 +17,7 @@ class UnificationTest {
         TermNode term1 = TermNode.fromString(termString1);
         TermNode term2 = TermNode.fromString(termString2);
 
-        UnificationResult unificationResult = Unification.findUnifier(term1, term2);
+        UnificationResult unificationResult = new DisagreementSetUnificationStrategy().findUnifier(term1, term2);
 
         assertTrue(unificationResult.isUnifiable());
         Substitution unifier = unificationResult.unifier();
