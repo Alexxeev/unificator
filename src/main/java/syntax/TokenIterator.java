@@ -114,8 +114,8 @@ class TokenIterator implements Iterator<Token> {
      * @param character a digit
      * @return true if argument is digit
      */
-    private boolean isDigit(final char character) {
-        return Character.isDigit(character);
+    private boolean isLetterOrDigit(final char character) {
+        return Character.isLetterOrDigit(character);
     }
 
     /**
@@ -134,16 +134,16 @@ class TokenIterator implements Iterator<Token> {
     }
 
     /**
-     * Reads digit symbols from character
+     * Reads letters and digits from
      * {@code characterIterator}
      *
      * @return string of digits
      */
-    private String readDigits() {
+    private String readLettersAndDigits() {
         StringBuilder sb = new StringBuilder();
         while (characterIterator.current() != CharacterIterator.DONE) {
             char currentChar = readSymbol();
-            if (!isDigit(currentChar)) {
+            if (!isLetterOrDigit(currentChar)) {
                 if (characterIterator.getIndex() != characterIterator.getEndIndex()) {
                     characterIterator.previous();
                 }
@@ -166,7 +166,7 @@ class TokenIterator implements Iterator<Token> {
         }
         char currentChar = readSymbol();
         if (isNamedTokenPrefix(currentChar)) {
-            String index = readDigits();
+            String index = readLettersAndDigits();
             return new Token(TOKEN_TYPE.get(currentChar),  index);
 
         } else if (isPunctuationToken(currentChar)) {

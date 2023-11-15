@@ -7,7 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TermParserTest {
     String[] termParsingTestCases = {
             "f1(x1,c1)",
-            "f1(x1,f2(c1))"
+            "f1(x1,f2(c1))",
+            "fNamed(xVar)"
     };
 
     public void testTermParsingCase(String termString) {
