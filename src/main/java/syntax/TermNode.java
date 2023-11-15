@@ -21,7 +21,7 @@ public abstract class TermNode {
      * @throws IllegalArgumentException if {@code token} is
      * an instance of punctuation token
      */
-    public static TermNode fromToken(@NotNull final Token token) {
+    static TermNode fromToken(@NotNull final Token token) {
         Objects.requireNonNull(token);
         switch (token.tokenType()) {
             case CONSTANT -> {
@@ -78,7 +78,7 @@ public abstract class TermNode {
      * Creates a new term node with provided name
      * @param name name of the node
      */
-    public TermNode( @NotNull final String name) {
+    protected TermNode(@NotNull final String name) {
         this.name = Objects.requireNonNull(name);
     }
 

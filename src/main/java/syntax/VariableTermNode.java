@@ -12,7 +12,7 @@ public final class VariableTermNode extends TermNode {
      * Creates a constant term node with provided name.
      * @param name name of the constant
      */
-    public VariableTermNode(final @NotNull String name) {
+    VariableTermNode(final @NotNull String name) {
         super(name);
     }
 
