@@ -11,7 +11,7 @@ class UnificationTest {
         TermNode term1 = TermNode.fromString("f3(f2(x1),x1,f2(x2))");
         TermNode term2 = TermNode.fromString("f3(x3,c1,x3)");
 
-        Unification.Result unificationResult = Unification.findUnifier(term1, term2);
+        Unification.UnificationResult unificationResult = Unification.findUnifier(term1, term2);
 
         assertTrue(unificationResult.isUnifiable());
         Substitution unifier = unificationResult.unifier();
@@ -24,7 +24,7 @@ class UnificationTest {
         TermNode term1 = TermNode.fromString("f3(f2(x1),x1,f1(f2(x2)))");
         TermNode term2 = TermNode.fromString("f3(x3,c1,f1(x3))");
 
-        Unification.Result unificationResult = Unification.findUnifier(term1, term2);
+        Unification.UnificationResult unificationResult = Unification.findUnifier(term1, term2);
 
         assertTrue(unificationResult.isUnifiable());
         Substitution unifier = unificationResult.unifier();

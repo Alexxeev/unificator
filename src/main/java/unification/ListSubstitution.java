@@ -1,7 +1,10 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
+import syntax.ConstantTermNode;
+import syntax.FunctionalSymbolTermNode;
 import syntax.TermNode;
+import syntax.VariableTermNode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,19 +23,22 @@ record ListSubstitution(
 ) implements Substitution {
 
     @Override
-    public TermNode instantiateVariables(final TermNode term) {
-        if (term.isConstant()) {
+    public TermNode instantiateVariables(@NotNull final TermNode term) {
+        Objects.requireNonNull(term);
+        if (term instanceof ConstantTermNode) {
             return term;
         }
-        if (term.isVariable()) {
+        if (term instanceof VariableTermNode) {
             if (!domain.containsKey(term.getName())) {
                 return term;
             }
             return domain.get(term.getName());
         }
-        List<TermNode> children = term.getChildren();
-        for (int i = 0; i < children.size(); i++) {
-            term.setChild(i, instantiateVariables(children.get(i)));
+        if (term instanceof FunctionalSymbolTermNode functionalSymbolTerm) {
+            List<TermNode> children = functionalSymbolTerm.getChildren();
+            for (int i = 0; i < children.size(); i++) {
+                functionalSymbolTerm.setChild(i, instantiateVariables(children.get(i)));
+            }
         }
 //        Iterator<TermNode> termIterator =
 //                new PreOrderTermIterator(Objects.requireNonNull(term), true);

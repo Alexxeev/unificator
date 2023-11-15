@@ -1,7 +1,8 @@
 package unification;
 
-import syntax.PreOrderTermIterator;
+import syntax.TermIterator;
 import syntax.TermNode;
+import syntax.VariableTermNode;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -22,7 +23,7 @@ public final class Unification {
      *                It returns identity substitution
      *                if input set is not unifiable.
      */
-    public record Result(
+    public record UnificationResult(
             boolean isUnifiable,
             Substitution unifier
     ) { }
@@ -86,9 +87,9 @@ public final class Unification {
     private static DisagreementPairSearchResult findDisagreement(
             final TermNode root1,
             final TermNode root2) {
-        Iterator<TermNode> term1NodeIterator = new PreOrderTermIterator(
+        Iterator<TermNode> term1NodeIterator = new TermIterator(
                 root1);
-        Iterator<TermNode> term2NodeIterator = new PreOrderTermIterator(
+        Iterator<TermNode> term2NodeIterator = new TermIterator(
                 root2);
         TermNode term1 = TermNode.empty();
         TermNode term2 = TermNode.empty();
@@ -98,21 +99,21 @@ public final class Unification {
             if (term1.getName().equals(term2.getName())) {
                 //Node names are equal, continue scanning
                 continue;
-            } else if (!term1.isVariable() && !term2.isVariable()) {
+            } else if (!(term1 instanceof VariableTermNode) && !(term2 instanceof VariableTermNode)) {
                 // If there is no variable then no substitution can occur
                 // we can conclude that disagreement pair is not unifiable
                 return new DisagreementPairSearchResult(
                         term1, term2, DisagreementStatus.SYMBOL_CLASH);
-            } else if (term1.isVariable()
+            } else if (term1 instanceof VariableTermNode
                     && term2.getDomain().contains(term1.getName())) {
                 return new DisagreementPairSearchResult(
                         term1, term2, DisagreementStatus.SYMBOL_CLASH);
-            } else if (term2.isVariable()
+            } else if (term2 instanceof VariableTermNode
                     && term1.getDomain().contains(term2.getName())) {
                 return new DisagreementPairSearchResult(
                         term1, term2, DisagreementStatus.SYMBOL_CLASH);
             }
-            if (term1.isVariable()) {
+            if (term1 instanceof VariableTermNode) {
                 return new DisagreementPairSearchResult(
                         term1, term2, DisagreementStatus.FOUND);
             } else {
@@ -133,7 +134,7 @@ public final class Unification {
      * @param term2 second term
      * @return Result of unification of two terms.
      */
-    public static Result findUnifier(final TermNode term1, final TermNode term2) {
+    public static UnificationResult findUnifier(final TermNode term1, final TermNode term2) {
         TermNode modifiedTerm1 = Objects.requireNonNull(term1);
         TermNode modifiedTerm2 = Objects.requireNonNull(term2);
         Substitution substitution = Substitution.identity();
@@ -142,10 +143,10 @@ public final class Unification {
                     findDisagreement(modifiedTerm1, modifiedTerm2);
             switch (result.status()) {
                 case NO_DISAGREEMENT -> {
-                    return new Result(true, substitution);
+                    return new UnificationResult(true, substitution);
                 }
                 case SYMBOL_CLASH -> {
-                    return new Result(false, Substitution.identity());
+                    return new UnificationResult(false, Substitution.identity());
                 }
                 case FOUND -> {
                     substitution = substitution.composition(

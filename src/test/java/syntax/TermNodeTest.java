@@ -11,10 +11,11 @@ class TermNodeTest {
         TermNode term = TermNode.fromToken(
                 new Token(Token.Type.FUNCTIONAL_SYMBOL,  "1")
         );
-        term.prependChild(TermNode.fromToken(
+        FunctionalSymbolTermNode functionalSymbolTermNode = (FunctionalSymbolTermNode) term;
+        functionalSymbolTermNode.prependChild(TermNode.fromToken(
                 new Token(Token.Type.CONSTANT,  "1")
         ));
-        term.prependChild(TermNode.fromToken(
+        functionalSymbolTermNode.prependChild(TermNode.fromToken(
                 new Token(Token.Type.VARIABLE,  "1")
         ));
 
@@ -27,14 +28,16 @@ class TermNodeTest {
         TermNode innerTerm = TermNode.fromToken(
                 new Token(Token.Type.FUNCTIONAL_SYMBOL,  "2")
         );
-        innerTerm.prependChild(TermNode.fromToken(
+        FunctionalSymbolTermNode functionalSymbolInnerTermNode = (FunctionalSymbolTermNode) innerTerm;
+        functionalSymbolInnerTermNode.prependChild(TermNode.fromToken(
                 new Token(Token.Type.CONSTANT,  "1")
         ));
         TermNode term = TermNode.fromToken(
                 new Token(Token.Type.FUNCTIONAL_SYMBOL,  "1")
         );
-        term.prependChild(innerTerm);
-        term.prependChild(TermNode.fromToken(
+        FunctionalSymbolTermNode functionalSymbolTermNode = (FunctionalSymbolTermNode) term;
+        functionalSymbolTermNode.prependChild(innerTerm);
+        functionalSymbolTermNode.prependChild(TermNode.fromToken(
                 new Token(Token.Type.VARIABLE,  "1")
         ));
 

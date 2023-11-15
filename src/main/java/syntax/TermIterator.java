@@ -1,6 +1,9 @@
 package syntax;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -12,7 +15,7 @@ import java.util.Stack;
  * This class uses pre-order depth-first traversal method to
  * iterate over nodes of the syntax tree
  */
-public final class PreOrderTermIterator implements Iterator<TermNode> {
+public final class TermIterator implements Iterator<TermNode> {
     /**
      * Contains nodes to be traversed
      */
@@ -32,14 +35,14 @@ public final class PreOrderTermIterator implements Iterator<TermNode> {
      *
      * @param root root node of the syntax tree
      */
-    public PreOrderTermIterator(
-            final TermNode root) {
+    public TermIterator(
+            final @NotNull TermNode root) {
         currentNode = Objects.requireNonNull(root);
     }
 
     @Override
     public boolean hasNext() {
-        return firstTime || !currentNode.isLeafNode() || nodeStack.size() > 0;
+        return firstTime || !currentNode.isLeafNode() || !nodeStack.isEmpty();
     }
 
     @Override
@@ -48,15 +51,16 @@ public final class PreOrderTermIterator implements Iterator<TermNode> {
             firstTime = false;
             return currentNode;
         }
-        if (!currentNode.isLeafNode()) {
+        if (currentNode instanceof FunctionalSymbolTermNode functionalSymbolTermNode) {
+            List<TermNode> children = functionalSymbolTermNode.getChildren();
             ListIterator<TermNode> iterator =
-                    currentNode.getChildren().listIterator(currentNode.getChildren().size());
+                    children.listIterator(children.size());
             while (iterator.hasPrevious()) {
                 TermNode childTerm = iterator.previous();
                 nodeStack.push(childTerm);
             }
         }
-        if (nodeStack.size() == 0) {
+        if (nodeStack.isEmpty()) {
             throw new NoSuchElementException();
         }
         currentNode = nodeStack.pop();

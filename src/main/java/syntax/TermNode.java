@@ -10,14 +10,8 @@ import java.util.Set;
 /**
  * A node of first-order term syntax tree.
  * It is identified by its name and type.
- * <p>
- * Internal nodes of the tree can have arbitrary number of
- * children which are also instances of {@code TermNode}.
- * <p>
- * Users of this interface can insert children nodes to
- * internal nodes of the tree and replace children nodes
  */
-public interface TermNode {
+public abstract class TermNode {
     /**
      * Creates a new node with provided token.
      *
@@ -27,7 +21,7 @@ public interface TermNode {
      * @throws IllegalArgumentException if {@code token} is
      * an instance of punctuation token
      */
-    static TermNode fromToken(@NotNull final Token token) {
+    public static TermNode fromToken(@NotNull final Token token) {
         Objects.requireNonNull(token);
         switch (token.tokenType()) {
             case CONSTANT -> {
@@ -60,7 +54,7 @@ public interface TermNode {
      * @throws IllegalArgumentException if term is of invalid form
      * @throws NullPointerException if {@code termString} is {@code null}
      */
-    static TermNode fromString(@NotNull final String termString) {
+    public static TermNode fromString(@NotNull final String termString) {
         TokenIterator iterator = new TokenIterator(new StringCharacterIterator(
                 Objects.requireNonNull(termString)
         ));
@@ -71,28 +65,50 @@ public interface TermNode {
      * Returns a leaf term node with empty name field.
      * @return instance of empty token.
      */
-    static TermNode empty() {
+    public static TermNode empty() {
         return new ConstantTermNode("");
     }
 
     /**
-     * Adds a list of terms to the children list of this node
-     * to the end of the children list (optional operation).
-     *
-     * @param nodes list of nodes
-     * @throws UnsupportedOperationException if node is leaf
+     * Name of this node
      */
-    void addChildren(List<TermNode> nodes);
+    private final String name;
 
     /**
-     * Returns a list that contains children nodes of this node
-     * (optional operation).
-     * Note that returned list is immutable.
-     *
-     * @return immutable list of children term nodes
-     * @throws UnsupportedOperationException if node is leaf
+     * Creates a new term node with provided name
+     * @param name name of the node
      */
-    List<TermNode> getChildren();
+    public TermNode( @NotNull final String name) {
+        this.name = Objects.requireNonNull(name);
+    }
+
+    /**
+     * Recursively builds string representation of syntax tree
+     * rooted at the provided node
+     * @param sb a string builder
+     * @param term root node of the syntax tree
+     * @return a {@code StringBuilder} instance that contains
+     *          a string representation of the syntax tree
+     */
+    private StringBuilder constructTermString(StringBuilder sb, TermNode term) {
+        sb.append(term.getName());
+        if (!(term instanceof FunctionalSymbolTermNode)) {
+            return sb;
+        }
+        sb.append("(");
+        int i = 0;
+        List<TermNode> children = ((FunctionalSymbolTermNode)term).getChildren();
+        int indexOfLastItem = children.size() - 1;
+        for (TermNode child : children) {
+            constructTermString(sb, child);
+            if (i < indexOfLastItem) {
+                sb.append(",");
+            }
+            i++;
+        }
+        sb.append(")");
+        return sb;
+    }
 
     /**
      * Returns a set of variables that are present in this term.
@@ -102,7 +118,7 @@ public interface TermNode {
      *
      * @return immutable set of variables
      */
-    Set<String> getDomain();
+    public abstract Set<String> getDomain();
 
     /**
      * Returns the name of this term node. Name has the following format:
@@ -112,35 +128,9 @@ public interface TermNode {
      *
      * @return string representation of node name
      */
-    String getName();
-
-    /**
-     * Returns the type that node represents.
-     *
-     * @return the type that node represents.
-     */
-    Type getTermType();
-
-    /**
-     * Inserts the specified term node as a child node
-     * in the beginning of the child node list (optional operation).
-     *
-     * @param term node to be inserted.
-     * @throws UnsupportedOperationException if this term node is leaf node.
-     */
-    void prependChild(TermNode term);
-
-    /**
-     * Replaces the element at the specified position in the child node list
-     * with the specified element (optional operation).
-     *
-     * @param index index of child node to replace
-     * @param term child node to be stored at the specified position
-     * @throws UnsupportedOperationException if this term node is leaf node.
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *         ({@code index < 0 || index > size()})
-     */
-    void setChild(int index, TermNode term);
+    public String getName() {
+        return name;
+    }
 
     /**
      * Returns true if this node does not have children nodes
@@ -148,37 +138,26 @@ public interface TermNode {
      *
      * @return true if this node is leaf node
      */
-    boolean isLeafNode();
+    public abstract boolean isLeafNode();
 
     /**
-     * Returns true if this node represents a variable.
+     * Returns a string representation of the syntax tree
+     * rooted at this node
+     * <p>
+     * String representation is of the following formats:<br>
+     * c&lt;<i>index</i>&gt; - constant<br>
+     * x&lt;<i>index</i>&gt; - variable<br>
+     * f</i>&lt;<i>index</i>&gt;<i>(</i>
+     * &lt;<i>term</i>&gt;<i>,</i>&lt;<i>term</i>&gt;<i>...</i>&lt;<i>term</i>&gt;
+     * <i>)</i> - term with functional symbol of arity &gt; 0
+     * <p>
      *
-     * @return true if this node represents a variable
+     * @return a string representation of the syntax tree
+     *      rooted at this node
      */
-    boolean isVariable();
-
-    /**
-     * Returns true if this node represents a constant.
-     *
-     * @return true if this node represents a constant
-     */
-    boolean isConstant();
-
-    /**
-     * Type of term node
-     */
-    enum Type {
-        /**
-         * A constant term
-         */
-        CONSTANT,
-        /**
-         * A variable term
-         */
-        VARIABLE,
-        /**
-         * A functional symbol
-         */
-        FUNCTIONAL_SYMBOL,
+    @Override
+    public String toString() {
+        return constructTermString(
+                new StringBuilder(), this).toString();
     }
 }
