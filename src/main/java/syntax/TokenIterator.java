@@ -100,7 +100,7 @@ class TokenIterator implements Iterator<Token> {
      * Returns true if argument is punctuation symbol (left parenthesis,
      * right parenthesis or comma)
      *
-     * @param character a character
+     * @param character a character to be tested
      * @return true if argument is punctuation symbol
      */
     private boolean isPunctuationToken(final char character) {
@@ -109,13 +109,23 @@ class TokenIterator implements Iterator<Token> {
     }
 
     /**
-     * Returns true if argument is digit
+     * Returns true if argument is letter or digit
      *
-     * @param character a digit
+     * @param character a character to be tested
      * @return true if argument is digit
      */
     private boolean isLetterOrDigit(final char character) {
         return Character.isLetterOrDigit(character);
+    }
+
+    /**
+     * Returns true if argument is Unicode space character
+     *
+     * @param character a character to be tested
+     * @return true if argument is digit
+     */
+    private boolean isSpace(final char character) {
+        return Character.isSpaceChar(character);
     }
 
     /**
@@ -134,6 +144,34 @@ class TokenIterator implements Iterator<Token> {
     }
 
     /**
+     * Reads the characters until the first occurrence of
+     * non-whitespace character
+     *
+     * @return the first occurrence of non-whitespace
+     * character
+     */
+    private char readSymbolUntilNonWhitespace() {
+        do {
+            readSymbol();
+        } while (isSpace(characterIterator.current()));
+        return characterIterator.current();
+    }
+
+    /**
+     * Decreases the current index of {@code characterIterator}
+     * if it has not already reached the last character
+     * <p>
+     * Note: this method does nothing if {@code characterIterator}
+     * reached the last symbol to prevent endless iteration over
+     * characters.
+     */
+    private void unreadSymbol() {
+        if (characterIterator.getIndex() != characterIterator.getEndIndex()) {
+            characterIterator.previous();
+        }
+    }
+
+    /**
      * Reads letters and digits from
      * {@code characterIterator}
      *
@@ -144,9 +182,7 @@ class TokenIterator implements Iterator<Token> {
         while (characterIterator.current() != CharacterIterator.DONE) {
             char currentChar = readSymbol();
             if (!isLetterOrDigit(currentChar)) {
-                if (characterIterator.getIndex() != characterIterator.getEndIndex()) {
-                    characterIterator.previous();
-                }
+                unreadSymbol();
                 break;
             }
             sb.append(currentChar);
@@ -164,7 +200,7 @@ class TokenIterator implements Iterator<Token> {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        char currentChar = readSymbol();
+        char currentChar = readSymbolUntilNonWhitespace();
         if (isNamedTokenPrefix(currentChar)) {
             String index = readLettersAndDigits();
             return new Token(TOKEN_TYPE.get(currentChar),  index);

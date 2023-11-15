@@ -7,12 +7,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TermParserTest {
     @ParameterizedTest
-    @ValueSource(strings = {"f1(x1,c1)",
+    @ValueSource(strings = {
+            "f1(x1,c1)",
             "f1(x1,f2(c1))",
-            "fNamed(xVar)"})
+            "fNamed(xVar)",
+            " f1( xNamed1, f2(cNamed1) ) ",
+            "xНазвание"
+    })
     public void testTermParsingCase(String termString) {
         TermNode term = TermNode.fromString(termString);
 
-        assertEquals(termString, term.toString());
+        assertEquals(termString.replaceAll("\\s", ""), term.toString());
     }
 }
