@@ -22,7 +22,7 @@ public final class FunctionalSymbolTermNode extends TermNode {
      * Creates a functional symbol term node with provided name.
      * @param name name of the functional symbol
      */
-    public FunctionalSymbolTermNode(final @NotNull String name) {
+    FunctionalSymbolTermNode(final @NotNull String name) {
         super(name);
     }
 

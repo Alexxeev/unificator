@@ -12,7 +12,7 @@ public final class ConstantTermNode extends TermNode {
      * Creates a constant term node with provided name.
      * @param name name of the constant
      */
-    public ConstantTermNode(final @NotNull String name) {
+    ConstantTermNode(final @NotNull String name) {
         super(name);
     }
 
