@@ -3,7 +3,6 @@ package syntax;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.CharacterIterator;
-import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -42,25 +41,13 @@ class TokenIterator implements Iterator<Token> {
      * Maps symbols to the corresponding token types
      */
     private static final Map<Character, Token.Type> TOKEN_TYPE =
-            Map.ofEntries(
-                    new AbstractMap.SimpleImmutableEntry<>(
-                            LEFT_PARENTHESIS,
-                            Token.Type.LEFT_PARENTHESIS),
-                    new AbstractMap.SimpleImmutableEntry<>(
-                            RIGHT_PARENTHESIS,
-                            Token.Type.RIGHT_PARENTHESIS),
-                    new AbstractMap.SimpleImmutableEntry<>(
-                            COMMA,
-                            Token.Type.COMMA),
-                    new AbstractMap.SimpleImmutableEntry<>(
-                            VARIABLE_SYMBOL,
-                            Token.Type.VARIABLE),
-                    new AbstractMap.SimpleImmutableEntry<>(
-                            CONSTANT_SYMBOL,
-                            Token.Type.CONSTANT),
-                    new AbstractMap.SimpleImmutableEntry<>(
-                            FUNCTION_SYMBOL,
-                            Token.Type.FUNCTIONAL_SYMBOL)
+            Map.of(
+                    LEFT_PARENTHESIS,  Token.Type.LEFT_PARENTHESIS,
+                    RIGHT_PARENTHESIS, Token.Type.RIGHT_PARENTHESIS,
+                    COMMA,             Token.Type.COMMA,
+                    VARIABLE_SYMBOL,   Token.Type.VARIABLE,
+                    CONSTANT_SYMBOL,   Token.Type.CONSTANT,
+                    FUNCTION_SYMBOL,   Token.Type.FUNCTIONAL_SYMBOL
             );
 
     /**
