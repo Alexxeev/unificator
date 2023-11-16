@@ -1,7 +1,5 @@
 package syntax;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A record class to store token data.
  *
@@ -10,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *                      variables, and functional symbols can have index.
  */
 record Token(
-        @NotNull Token.Type tokenType,
+        Token.Type tokenType,
         String optionalIndex
 ) {
 
