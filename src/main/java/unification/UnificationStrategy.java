@@ -11,8 +11,6 @@ import syntax.TermNode;
 public interface UnificationStrategy {
     /**
      * Finds a unifier of set of two terms.
-     * It uses Robinson unification algorithm to find the unifier
-     * of two terms.
      *
      * @param term1 first term
      * @param term2 second term
