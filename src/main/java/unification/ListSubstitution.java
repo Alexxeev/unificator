@@ -25,6 +25,11 @@ record ListSubstitution(
     @Override
     public TermNode instantiateVariables(@NotNull final TermNode term) {
         Objects.requireNonNull(term);
+        TermNode termCopy = term.deepCopy();
+        return instantiateVariablesInPlace(termCopy);
+    }
+
+    private TermNode instantiateVariablesInPlace(TermNode term) {
         if (term instanceof ConstantTermNode) {
             return term;
         }
@@ -37,25 +42,11 @@ record ListSubstitution(
         if (term instanceof FunctionalSymbolTermNode functionalSymbolTerm) {
             List<TermNode> children = functionalSymbolTerm.getChildren();
             for (int i = 0; i < children.size(); i++) {
-                functionalSymbolTerm.setChild(i, instantiateVariables(children.get(i)));
+                functionalSymbolTerm.setChild(
+                        i,
+                        instantiateVariablesInPlace(children.get(i)));
             }
         }
-//        Iterator<TermNode> termIterator =
-//                new PreOrderTermIterator(Objects.requireNonNull(term), true);
-//        termIterator.forEachRemaining(currentTerm -> {
-//            if (currentTerm.isLeafNode()) {
-//                return;
-//            }
-//            List<TermNode> children = currentTerm.getChildren();
-//            for (int i = 0, size = children.size(); i < size; i++) {
-//                String childName = children.get(i).getName();
-//                if (!domain.containsKey(childName)) {
-//                    continue;
-//                }
-//                TermNode replacementTerm = domain.get(childName);
-//                currentTerm.setChild(i, replacementTerm);
-//            }
-//        });
         return term;
     }
 
