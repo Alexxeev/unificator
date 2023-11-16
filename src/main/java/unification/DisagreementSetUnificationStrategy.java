@@ -2,8 +2,8 @@ package unification;
 
 import org.jetbrains.annotations.NotNull;
 import syntax.TermIterator;
-import syntax.TermNode;
-import syntax.VariableTermNode;
+import syntax.Term;
+import syntax.VariableTerm;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -28,8 +28,8 @@ public final class DisagreementSetUnificationStrategy implements UnificationStra
      * @param status a status of the search
      */
     private record DisagreementPairSearchResult(
-            TermNode offendingVariable,
-            TermNode offendingTerm,
+            Term offendingVariable,
+            Term offendingTerm,
             DisagreementStatus status
     ) { }
 
@@ -70,35 +70,35 @@ public final class DisagreementSetUnificationStrategy implements UnificationStra
      * @return result of the search for disagreement set
      */
     private static DisagreementPairSearchResult findDisagreement(
-            final TermNode root1,
-            final TermNode root2) {
-        Iterator<TermNode> term1NodeIterator = new TermIterator(
+            final Term root1,
+            final Term root2) {
+        Iterator<Term> term1NodeIterator = new TermIterator(
                 root1);
-        Iterator<TermNode> term2NodeIterator = new TermIterator(
+        Iterator<Term> term2NodeIterator = new TermIterator(
                 root2);
-        TermNode term1 = TermNode.empty();
-        TermNode term2 = TermNode.empty();
+        Term term1 = Term.empty();
+        Term term2 = Term.empty();
         while (term1NodeIterator.hasNext() && term2NodeIterator.hasNext()) {
             term1 = term1NodeIterator.next();
             term2 = term2NodeIterator.next();
             if (term1.getName().equals(term2.getName())) {
                 //Node names are equal, continue scanning
                 continue;
-            } else if (!(term1 instanceof VariableTermNode) && !(term2 instanceof VariableTermNode)) {
+            } else if (!(term1 instanceof VariableTerm) && !(term2 instanceof VariableTerm)) {
                 // If there is no variable then no substitution can occur
                 // we can conclude that disagreement pair is not unifiable
                 return new DisagreementPairSearchResult(
                         term1, term2, DisagreementStatus.SYMBOL_CLASH);
-            } else if (term1 instanceof VariableTermNode
+            } else if (term1 instanceof VariableTerm
                     && term2.getDomain().contains(term1.getName())) {
                 return new DisagreementPairSearchResult(
                         term1, term2, DisagreementStatus.SYMBOL_CLASH);
-            } else if (term2 instanceof VariableTermNode
+            } else if (term2 instanceof VariableTerm
                     && term1.getDomain().contains(term2.getName())) {
                 return new DisagreementPairSearchResult(
                         term1, term2, DisagreementStatus.SYMBOL_CLASH);
             }
-            if (term1 instanceof VariableTermNode) {
+            if (term1 instanceof VariableTerm) {
                 return new DisagreementPairSearchResult(
                         term1, term2, DisagreementStatus.FOUND);
             } else {
@@ -112,9 +112,9 @@ public final class DisagreementSetUnificationStrategy implements UnificationStra
 
 
     @Override
-    public UnificationResult findUnifier(final @NotNull TermNode term1, final @NotNull TermNode term2) {
-        TermNode modifiedTerm1 = Objects.requireNonNull(term1);
-        TermNode modifiedTerm2 = Objects.requireNonNull(term2);
+    public UnificationResult findUnifier(final @NotNull Term term1, final @NotNull Term term2) {
+        Term modifiedTerm1 = Objects.requireNonNull(term1);
+        Term modifiedTerm2 = Objects.requireNonNull(term2);
         Substitution substitution = Substitution.identity();
         while (true) {
             DisagreementPairSearchResult result =

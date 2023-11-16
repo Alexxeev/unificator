@@ -1,7 +1,7 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.TermNode;
+import syntax.Term;
 
 import java.util.Map;
 import java.util.Objects;
@@ -33,13 +33,13 @@ public interface Substitution {
      */
     static Substitution of(
             @NotNull final String variable,
-            @NotNull final TermNode replacementTerm) {
+            @NotNull final Term replacementTerm) {
         return new ListSubstitution(Map.of(
                 Objects.requireNonNull(variable),
                 Objects.requireNonNull(replacementTerm)));
     }
 
-    static Substitution of(final Map<String, TermNode> domain) {
+    static Substitution of(final Map<String, Term> domain) {
         return new ListSubstitution(domain);
     }
 
@@ -53,7 +53,7 @@ public interface Substitution {
      * @return Term with variables in the domain of this substitution
      *         replaced by corresponding terms.
      */
-    TermNode instantiateVariables(TermNode term);
+    Term instantiateVariables(Term term);
 
     /**
      * Performs a composition operation on this substitution
@@ -73,7 +73,7 @@ public interface Substitution {
      * @return Result of composition of this substitution with
      *         other substitution.
      */
-    Substitution composition(String variable, TermNode replacementTerm);
+    Substitution composition(String variable, Term replacementTerm);
 
     /**
      * Returns a map which entries are pairs of variables and
@@ -82,5 +82,5 @@ public interface Substitution {
      * @return A map which entries are pairs of variables and
      *         corresponding replacement term.
      */
-    Map<String, TermNode> domain();
+    Map<String, Term> domain();
 }

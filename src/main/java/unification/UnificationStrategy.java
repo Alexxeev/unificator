@@ -1,7 +1,7 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.TermNode;
+import syntax.Term;
 
 /**
  * This interface describes a unification strategy
@@ -16,5 +16,5 @@ public interface UnificationStrategy {
      * @param term2 second term
      * @return Result of unification of two terms.
      */
-    UnificationResult findUnifier(@NotNull final TermNode term1, @NotNull final TermNode term2);
+    UnificationResult findUnifier(@NotNull final Term term1, @NotNull final Term term2);
 }

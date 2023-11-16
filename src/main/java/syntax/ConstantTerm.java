@@ -7,18 +7,18 @@ import java.util.Set;
 /**
  * A representation of a constant term
  */
-public final class ConstantTermNode extends TermNode {
+public final class ConstantTerm extends Term {
     /**
      * Creates a constant term node with provided name.
      * @param name name of the constant
      */
-    ConstantTermNode(final @NotNull String name) {
+    ConstantTerm(final @NotNull String name) {
         super(name);
     }
 
     @Override
-    public TermNode deepCopy() {
-        return new ConstantTermNode(this.getName());
+    public Term deepCopy() {
+        return new ConstantTerm(this.getName());
     }
 
     @Override

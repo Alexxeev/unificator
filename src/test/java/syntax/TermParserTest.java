@@ -14,7 +14,7 @@ class TermParserTest {
             " f1( xNamed1, f2(cNamed1) ) "
     })
     public void testTermParsingCase(String termString) {
-        TermNode term = TermNode.fromString(termString);
+        Term term = Term.fromString(termString);
 
         assertEquals(termString.replaceAll("\\s", ""), term.toString());
     }

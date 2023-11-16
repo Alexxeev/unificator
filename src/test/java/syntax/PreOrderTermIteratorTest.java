@@ -9,7 +9,7 @@ class TermIteratorTest {
     @Test
     public void testTermIterator() {
         String termString = "f3(f2(x1),x1,f1(f2(x2)))";
-        TermNode term = TermNode.fromString(termString);
+        Term term = Term.fromString(termString);
         String[] expectedTermNodes = {
                 "f3",
                 "f2",
@@ -20,7 +20,7 @@ class TermIteratorTest {
                 "x2"
         };
 
-        Iterator<TermNode> iterator = new TermIterator(term);
+        Iterator<Term> iterator = new TermIterator(term);
         int count = 0;
 
         while (iterator.hasNext()) {
