@@ -9,10 +9,13 @@ import java.util.Iterator;
 import java.util.Objects;
 
 /**
- * This utility class provides methods to perform unification
- * operation on the pair of terms.
- * Note that unification of arbitrary set of terms isn't implemented yet.
+ * An implementation of unification algorithm
+ * that uses disagreement set to unify two terms
+ *
+ * @deprecated This algorithm is considered ineffective and
+ *             may be subject for removal in future
  */
+@Deprecated
 public final class DisagreementSetUnificationStrategy implements UnificationStrategy {
 
     /**
