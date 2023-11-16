@@ -27,6 +27,16 @@ public final class FunctionalSymbolTermNode extends TermNode {
     }
 
     @Override
+    public TermNode deepCopy() {
+        final FunctionalSymbolTermNode copy = new FunctionalSymbolTermNode(
+                this.getName());
+        for (TermNode child : this.getChildren()) {
+            copy.addChild(child.deepCopy());
+        }
+        return copy;
+    }
+
+    @Override
     public Set<String> getDomain() {
         Iterator<TermNode> termNodeIterator = new TermIterator(
                 this
@@ -39,6 +49,10 @@ public final class FunctionalSymbolTermNode extends TermNode {
             }
         }
         return domain;
+    }
+
+    public void addChild(final @NotNull TermNode term) {
+        children.add(term);
     }
 
     /**

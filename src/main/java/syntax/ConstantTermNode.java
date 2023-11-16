@@ -17,6 +17,11 @@ public final class ConstantTermNode extends TermNode {
     }
 
     @Override
+    public TermNode deepCopy() {
+        return new ConstantTermNode(this.getName());
+    }
+
+    @Override
     public Set<String> getDomain() {
         return Set.of();
     }

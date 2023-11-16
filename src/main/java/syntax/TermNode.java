@@ -111,6 +111,13 @@ public abstract class TermNode {
     }
 
     /**
+     * Returns a deep copy of the tree.
+     *
+     * @return deep copy of the tree.
+     */
+    public abstract TermNode deepCopy();
+
+    /**
      * Returns a set of variables that are present in this term.
      * Every variable in the domain is represented as string.
      * Returned set is empty If term contains no variables.

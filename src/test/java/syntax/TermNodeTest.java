@@ -1,6 +1,8 @@
 package syntax;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,5 +44,22 @@ class TermNodeTest {
         ));
 
         assertEquals(termString, term.toString());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "c1",
+            "x1",
+            "f1(x1,c1)",
+            "f1(x1,f2(c1))",
+            "f3(f2(x1),x1,f1(f2(x2)));f3(x3,c1,f1(x3))"
+    })
+    public void deepCopy_ValidTerm_ShouldBeEqual(final String termString) {
+        TermNode originalTerm = TermNode.fromString(termString);
+
+        TermNode copyTerm = originalTerm.deepCopy();
+
+        assertEquals(originalTerm.toString(), copyTerm.toString());
+        assertNotSame(originalTerm, copyTerm);
     }
 }

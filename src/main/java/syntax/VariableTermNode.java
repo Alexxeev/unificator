@@ -17,6 +17,11 @@ public final class VariableTermNode extends TermNode {
     }
 
     @Override
+    public TermNode deepCopy() {
+        return new VariableTermNode(this.getName());
+    }
+
+    @Override
     public Set<String> getDomain() {
         return Set.of(getName());
     }
