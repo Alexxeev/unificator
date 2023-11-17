@@ -44,7 +44,7 @@ public interface Substitution {
     }
 
     /**
-     * Applies substitution to the provided term.
+     * Applies substitution to the copy of the provided term.
      * Returned term will have all instances of variables
      * contained in the domain of substitution replaced by
      * corresponding terms
@@ -54,6 +54,21 @@ public interface Substitution {
      *         replaced by corresponding terms.
      */
     Term instantiateVariables(Term term);
+
+    /**
+     * Applies substitution to the provided term.
+     * Returned term will have all instances of variables
+     * contained in the domain of substitution replaced by
+     * corresponding terms
+     * <p>
+     * Note: this operation is destructive and modifies the
+     * argument
+     *
+     * @param term A term to substitute variables in
+     * @return Term with variables in the domain of this substitution
+     *         replaced by corresponding terms.
+     */
+    Term instantiateVariablesInPlace(Term term);
 
     /**
      * Performs a composition operation on this substitution

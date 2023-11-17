@@ -29,7 +29,8 @@ record ListSubstitution(
         return instantiateVariablesInPlace(termCopy);
     }
 
-    private Term instantiateVariablesInPlace(Term term) {
+    @Override
+    public Term instantiateVariablesInPlace(Term term) {
         if (term instanceof ConstantTerm) {
             return term;
         }
