@@ -14,27 +14,26 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
 
     @Override
     public UnificationResult findUnifier(@NotNull Term term1, @NotNull Term term2) {
+        Objects.requireNonNull(term1);
+        Objects.requireNonNull(term2);
         substitution = Substitution.identity();
-        findUnifierRecursive(
-                Objects.requireNonNull(term1),
-                Objects.requireNonNull(term2));
+        findUnifierRecursive(term1.deepCopy(), term2.deepCopy());
         return new UnificationResult(
                 isUnifiable,
                 isUnifiable ? substitution : Substitution.identity());
     }
 
     private void findUnifierRecursive(@NotNull Term term1, @NotNull Term term2) {
-        Term term1Modified = term1, term2Modified = term2;
-        if (term1Modified instanceof VariableTerm) {
-            term1Modified = substitution.instantiateVariables(term1);
+        if (term1 instanceof VariableTerm) {
+            substitution.instantiateVariablesInPlace(term1);
         }
-        if (term1Modified instanceof VariableTerm) {
-            term2Modified = substitution.instantiateVariables(term2);
+        if (term2 instanceof VariableTerm) {
+            substitution.instantiateVariablesInPlace(term2);
         }
-        if (term1Modified instanceof VariableTerm
-                && Objects.equals(term1Modified.getName(), term2Modified.getName())) {
-        } else if (term1Modified instanceof FunctionalSymbolTerm functionalSymbolTermNode1
-                && term2Modified instanceof FunctionalSymbolTerm functionalSymbolTermNode2) {
+        if (term1 instanceof VariableTerm
+                && Objects.equals(term1.getName(), term2.getName())) {
+        } else if (term1 instanceof FunctionalSymbolTerm functionalSymbolTermNode1
+                && term2 instanceof FunctionalSymbolTerm functionalSymbolTermNode2) {
             String name1 = functionalSymbolTermNode1.getName();
             String name2 = functionalSymbolTermNode2.getName();
             List<Term> children1 = functionalSymbolTermNode1.getChildren();
@@ -46,12 +45,12 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
             for (int i = 0; i < children1.size(); i++) {
                 findUnifierRecursive(children1.get(i), children2.get(i));
             }
-        } else if (!(term1Modified instanceof VariableTerm)) {
-            findUnifierRecursive(term2Modified, term1Modified);
-        } else if (term2Modified.getDomain().contains(term1Modified.toString())) {
+        } else if (!(term1 instanceof VariableTerm)) {
+            findUnifierRecursive(term2, term1);
+        } else if (term2.getDomain().contains(term1.toString())) {
             isUnifiable = false;
         } else {
-            substitution = substitution.composition(term1Modified.getName(), term2Modified);
+            substitution = substitution.composition(term1.getName(), term2);
         }
     }
 }
