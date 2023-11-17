@@ -1,6 +1,7 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
+import syntax.ConstantTerm;
 import syntax.FunctionalSymbolTerm;
 import syntax.Term;
 import syntax.VariableTerm;
@@ -25,10 +26,10 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
 
     private void findUnifierRecursive(@NotNull Term term1, @NotNull Term term2) {
         if (term1 instanceof VariableTerm) {
-            substitution.instantiateVariablesInPlace(term1);
+            term1 = substitution.instantiateVariablesInPlace(term1);
         }
         if (term2 instanceof VariableTerm) {
-            substitution.instantiateVariablesInPlace(term2);
+            term2 = substitution.instantiateVariablesInPlace(term2);
         }
         if (term1 instanceof VariableTerm
                 && Objects.equals(term1.getName(), term2.getName())) {
@@ -44,6 +45,10 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
             }
             for (int i = 0; i < children1.size(); i++) {
                 findUnifierRecursive(children1.get(i), children2.get(i));
+            }
+        } else if (term1 instanceof ConstantTerm && term2 instanceof ConstantTerm) {
+            if (!term1.getName().equals(term2.getName())) {
+                isUnifiable = false;
             }
         } else if (!(term1 instanceof VariableTerm)) {
             findUnifierRecursive(term2, term1);

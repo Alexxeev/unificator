@@ -1,6 +1,8 @@
 package unification;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import syntax.Term;
 
 import java.util.Map;
@@ -8,6 +10,25 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SubstitutionTest {
+    @ParameterizedTest
+    @CsvSource(value = {
+            "f1(x5);x5;c1;f1(c1)",
+            "x5;x5;c1;c1"
+    }, delimiter = ';')
+    public void instantiateVariablesInPlace_ShouldModifyArgument(
+            String termString,
+            String variable,
+            String substitutionTerm,
+            String expectedTermString
+    ) {
+        Term term = Term.fromString(termString);
+        Substitution substitution = Substitution.of(variable, Term.fromString(substitutionTerm));
+
+        term = substitution.instantiateVariablesInPlace(term);
+
+        assertEquals(expectedTermString, term.toString());
+    }
+
     @Test
     public void testVariableSubstitution() {
         Substitution substitution = Substitution.of(

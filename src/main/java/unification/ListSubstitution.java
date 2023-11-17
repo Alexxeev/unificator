@@ -31,14 +31,10 @@ record ListSubstitution(
 
     @Override
     public Term instantiateVariablesInPlace(Term term) {
-        if (term instanceof ConstantTerm) {
-            return term;
-        }
         if (term instanceof VariableTerm) {
-            if (!domain.containsKey(term.getName())) {
-                return term;
+            if (domain.containsKey(term.getName())) {
+                return domain.get(term.getName());
             }
-            return domain.get(term.getName());
         }
         if (term instanceof FunctionalSymbolTerm functionalSymbolTerm) {
             List<Term> children = functionalSymbolTerm.getChildren();

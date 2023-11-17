@@ -62,7 +62,7 @@ public interface Substitution {
      * corresponding terms
      * <p>
      * Note: this operation is destructive and modifies the
-     * argument
+     * term if the term contains functional symbols
      *
      * @param term A term to substitute variables in
      * @return Term with variables in the domain of this substitution
