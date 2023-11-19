@@ -15,30 +15,53 @@ import java.util.Set;
  * a functional symbol of non-zero arity
  * and a list of child terms.
  */
-public final class FunctionalSymbolTermNode extends TermNode {
-    private final List<TermNode> children = new ArrayList<>();
+public final class FunctionalSymbolTerm extends Term {
+    /**
+     * A list that contains children nodes of this term
+     */
+    private final List<Term> children = new ArrayList<>();
 
     /**
      * Creates a functional symbol term node with provided name.
      * @param name name of the functional symbol
      */
-    FunctionalSymbolTermNode(final @NotNull String name) {
+    FunctionalSymbolTerm(final @NotNull String name) {
         super(name);
     }
 
     @Override
+    public Term deepCopy() {
+        final FunctionalSymbolTerm copy = new FunctionalSymbolTerm(
+                this.getName());
+        for (Term child : this.getChildren()) {
+            copy.addChild(child.deepCopy());
+        }
+        return copy;
+    }
+
+    @Override
     public Set<String> getDomain() {
-        Iterator<TermNode> termNodeIterator = new TermIterator(
+        Iterator<Term> termNodeIterator = new TermIterator(
                 this
         );
         Set<String> domain = new HashSet<>();
         while (termNodeIterator.hasNext()) {
-            TermNode termNode = termNodeIterator.next();
-            if (termNode instanceof VariableTermNode) {
-                domain.add(termNode.getName());
+            Term term = termNodeIterator.next();
+            if (term instanceof VariableTerm) {
+                domain.add(term.getName());
             }
         }
         return domain;
+    }
+
+    /**
+     * Inserts the specified term node as a child node
+     * in the end of the child node list.
+     *
+     * @param term node to be inserted.
+     */
+    public void addChild(final @NotNull Term term) {
+        children.add(term);
     }
 
     /**
@@ -47,7 +70,7 @@ public final class FunctionalSymbolTermNode extends TermNode {
      *
      * @param nodes list of nodes
      */
-    public void addChildren(@NotNull List<TermNode> nodes) {
+    public void addChildren(@NotNull List<Term> nodes) {
         children.addAll(Objects.requireNonNull(nodes));
     }
 
@@ -57,7 +80,7 @@ public final class FunctionalSymbolTermNode extends TermNode {
      *
      * @return immutable list of children term nodes
      */
-    public List<TermNode> getChildren() {
+    public List<Term> getChildren() {
         return Collections.unmodifiableList(children);
     }
 
@@ -67,7 +90,7 @@ public final class FunctionalSymbolTermNode extends TermNode {
      *
      * @param term node to be inserted.
      */
-    public void prependChild(final @NotNull TermNode term) {
+    public void prependChild(final @NotNull Term term) {
         children.add(0, Objects.requireNonNull(term));
     }
 
@@ -80,7 +103,7 @@ public final class FunctionalSymbolTermNode extends TermNode {
      * @throws IndexOutOfBoundsException if the index is out of range
      *         ({@code index < 0 || index > size()})
      */
-    public void setChild(final int index, final @NotNull TermNode term) {
+    public void setChild(final int index, final @NotNull Term term) {
         children.set(index, Objects.requireNonNull(term));
     }
 

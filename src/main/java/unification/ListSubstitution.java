@@ -1,10 +1,10 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.ConstantTermNode;
-import syntax.FunctionalSymbolTermNode;
-import syntax.TermNode;
-import syntax.VariableTermNode;
+import syntax.ConstantTerm;
+import syntax.FunctionalSymbolTerm;
+import syntax.Term;
+import syntax.VariableTerm;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,43 +19,31 @@ import java.util.Objects;
  *               to the term set
  */
 record ListSubstitution(
-        Map<String, TermNode> domain
+        Map<String, Term> domain
 ) implements Substitution {
 
     @Override
-    public TermNode instantiateVariables(@NotNull final TermNode term) {
+    public Term instantiateVariables(@NotNull final Term term) {
         Objects.requireNonNull(term);
-        if (term instanceof ConstantTermNode) {
-            return term;
-        }
-        if (term instanceof VariableTermNode) {
-            if (!domain.containsKey(term.getName())) {
-                return term;
+        Term termCopy = term.deepCopy();
+        return instantiateVariablesInPlace(termCopy);
+    }
+
+    @Override
+    public Term instantiateVariablesInPlace(Term term) {
+        if (term instanceof VariableTerm) {
+            if (domain.containsKey(term.getName())) {
+                return domain.get(term.getName());
             }
-            return domain.get(term.getName());
         }
-        if (term instanceof FunctionalSymbolTermNode functionalSymbolTerm) {
-            List<TermNode> children = functionalSymbolTerm.getChildren();
+        if (term instanceof FunctionalSymbolTerm functionalSymbolTerm) {
+            List<Term> children = functionalSymbolTerm.getChildren();
             for (int i = 0; i < children.size(); i++) {
-                functionalSymbolTerm.setChild(i, instantiateVariables(children.get(i)));
+                functionalSymbolTerm.setChild(
+                        i,
+                        instantiateVariablesInPlace(children.get(i)));
             }
         }
-//        Iterator<TermNode> termIterator =
-//                new PreOrderTermIterator(Objects.requireNonNull(term), true);
-//        termIterator.forEachRemaining(currentTerm -> {
-//            if (currentTerm.isLeafNode()) {
-//                return;
-//            }
-//            List<TermNode> children = currentTerm.getChildren();
-//            for (int i = 0, size = children.size(); i < size; i++) {
-//                String childName = children.get(i).getName();
-//                if (!domain.containsKey(childName)) {
-//                    continue;
-//                }
-//                TermNode replacementTerm = domain.get(childName);
-//                currentTerm.setChild(i, replacementTerm);
-//            }
-//        });
         return term;
     }
 
@@ -64,16 +52,16 @@ record ListSubstitution(
         Objects.requireNonNull(other);
         //create shallow copy of map to prevent
         // destruction of original substitution
-        Map<String, TermNode> newDomain = new HashMap<>(domain);
-        for (Map.Entry<String, TermNode> entry : newDomain.entrySet()) {
-            TermNode modifiedTerm = other.instantiateVariables(entry.getValue());
+        Map<String, Term> newDomain = new HashMap<>(domain);
+        for (Map.Entry<String, Term> entry : newDomain.entrySet()) {
+            Term modifiedTerm = other.instantiateVariables(entry.getValue());
             if (modifiedTerm.getName().equals(entry.getKey())) {
                 newDomain.remove(entry.getKey());
             } else {
                 newDomain.replace(entry.getKey(), modifiedTerm);
             }
         }
-        for (Map.Entry<String, TermNode> entry : other.domain().entrySet()) {
+        for (Map.Entry<String, Term> entry : other.domain().entrySet()) {
             if (!domain.containsKey(entry.getKey())) {
                 newDomain.put(entry.getKey(), entry.getValue());
             }
@@ -82,7 +70,7 @@ record ListSubstitution(
     }
 
     @Override
-    public Substitution composition(final @NotNull String variable, final @NotNull TermNode replacementTerm) {
+    public Substitution composition(final @NotNull String variable, final @NotNull Term replacementTerm) {
         Objects.requireNonNull(variable);
         Objects.requireNonNull(replacementTerm);
 

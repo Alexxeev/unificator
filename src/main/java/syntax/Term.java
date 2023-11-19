@@ -11,7 +11,7 @@ import java.util.Set;
  * A node of first-order term syntax tree.
  * It is identified by its name and type.
  */
-public abstract class TermNode {
+public abstract class Term {
     /**
      * Creates a new node with provided token.
      *
@@ -21,17 +21,17 @@ public abstract class TermNode {
      * @throws IllegalArgumentException if {@code token} is
      * an instance of punctuation token
      */
-    static TermNode fromToken(@NotNull final Token token) {
+    static Term fromToken(@NotNull final Token token) {
         Objects.requireNonNull(token);
         switch (token.tokenType()) {
             case CONSTANT -> {
-                return new ConstantTermNode(token.toString());
+                return new ConstantTerm(token.toString());
             }
             case VARIABLE -> {
-                return new VariableTermNode(token.toString());
+                return new VariableTerm(token.toString());
             }
             case FUNCTIONAL_SYMBOL -> {
-                return new FunctionalSymbolTermNode(token.toString());
+                return new FunctionalSymbolTerm(token.toString());
             }
             default -> throw new IllegalArgumentException("illegal token type");
         }
@@ -54,7 +54,7 @@ public abstract class TermNode {
      * @throws IllegalArgumentException if term is of invalid form
      * @throws NullPointerException if {@code termString} is {@code null}
      */
-    public static TermNode fromString(@NotNull final String termString) {
+    public static Term fromString(@NotNull final String termString) {
         TokenIterator iterator = new TokenIterator(new StringCharacterIterator(
                 Objects.requireNonNull(termString)
         ));
@@ -65,8 +65,8 @@ public abstract class TermNode {
      * Returns a leaf term node with empty name field.
      * @return instance of empty token.
      */
-    public static TermNode empty() {
-        return new ConstantTermNode("");
+    public static Term empty() {
+        return new ConstantTerm("");
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class TermNode {
      * Creates a new term node with provided name
      * @param name name of the node
      */
-    protected TermNode(@NotNull final String name) {
+    protected Term(@NotNull final String name) {
         this.name = Objects.requireNonNull(name);
     }
 
@@ -90,16 +90,16 @@ public abstract class TermNode {
      * @return a {@code StringBuilder} instance that contains
      *          a string representation of the syntax tree
      */
-    private StringBuilder constructTermString(StringBuilder sb, TermNode term) {
+    private StringBuilder constructTermString(StringBuilder sb, Term term) {
         sb.append(term.getName());
-        if (!(term instanceof FunctionalSymbolTermNode)) {
+        if (!(term instanceof FunctionalSymbolTerm)) {
             return sb;
         }
         sb.append("(");
         int i = 0;
-        List<TermNode> children = ((FunctionalSymbolTermNode)term).getChildren();
+        List<Term> children = ((FunctionalSymbolTerm)term).getChildren();
         int indexOfLastItem = children.size() - 1;
-        for (TermNode child : children) {
+        for (Term child : children) {
             constructTermString(sb, child);
             if (i < indexOfLastItem) {
                 sb.append(",");
@@ -109,6 +109,13 @@ public abstract class TermNode {
         sb.append(")");
         return sb;
     }
+
+    /**
+     * Returns a deep copy of the tree.
+     *
+     * @return deep copy of the tree.
+     */
+    public abstract Term deepCopy();
 
     /**
      * Returns a set of variables that are present in this term.
@@ -122,8 +129,7 @@ public abstract class TermNode {
 
     /**
      * Returns the name of this term node. Name has the following format:
-     * <p>
-     * <p>
+     * <br>
      * &lt;prefixCharacter&gt;&lt;indexDigits&gt;
      *
      * @return string representation of node name
@@ -143,14 +149,14 @@ public abstract class TermNode {
     /**
      * Returns a string representation of the syntax tree
      * rooted at this node
-     * <p>
+     * <br>
      * String representation is of the following formats:<br>
      * c&lt;<i>index</i>&gt; - constant<br>
      * x&lt;<i>index</i>&gt; - variable<br>
-     * f</i>&lt;<i>index</i>&gt;<i>(</i>
+     * <i>f</i>&lt;<i>index</i>&gt;<i>(</i>
      * &lt;<i>term</i>&gt;<i>,</i>&lt;<i>term</i>&gt;<i>...</i>&lt;<i>term</i>&gt;
      * <i>)</i> - term with functional symbol of arity &gt; 0
-     * <p>
+     * <br>
      *
      * @return a string representation of the syntax tree
      *      rooted at this node

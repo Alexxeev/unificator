@@ -1,7 +1,5 @@
 package syntax;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * A record class to store token data.
  *
@@ -10,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
  *                      variables, and functional symbols can have index.
  */
 record Token(
-        @NotNull Token.Type tokenType,
+        Token.Type tokenType,
         String optionalIndex
 ) {
 
@@ -56,6 +54,11 @@ record Token(
          */
         private final char relatedCharacter;
 
+        /**
+         * Creates a new token type with provided character associated
+         * with this token type
+         * @param relatedCharacter character associated with this token type
+         */
         Type(final char relatedCharacter) {
             this.relatedCharacter = relatedCharacter;
         }

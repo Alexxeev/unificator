@@ -30,12 +30,12 @@ final class TermParser {
      *
      * @return list of term nodes
      */
-    private List<TermNode> parseArguments() {
+    private List<Term> parseArguments() {
         if (tokenIterator.next().tokenType() != Token.Type.LEFT_PARENTHESIS) {
             throw new IllegalArgumentException(
                     "expected a left parenthesis after functional symbol");
         }
-        List<TermNode> arguments = new ArrayList<>();
+        List<Term> arguments = new ArrayList<>();
         while (tokenIterator.hasNext()) {
             arguments.add(parseTerm());
             Token.Type tokenType = tokenIterator.next().tokenType();
@@ -55,12 +55,12 @@ final class TermParser {
      *
      * @return a root of the syntax tree
      */
-    public TermNode parseTerm() {
+    public Term parseTerm() {
         if (!tokenIterator.hasNext()) {
             throw new IllegalArgumentException("Unexpected EOF while reading tokens");
         }
-        TermNode term = TermNode.fromToken(tokenIterator.next());
-        if (term instanceof FunctionalSymbolTermNode functionalSymbolTermNode) {
+        Term term = Term.fromToken(tokenIterator.next());
+        if (term instanceof FunctionalSymbolTerm functionalSymbolTermNode) {
             functionalSymbolTermNode.addChildren(parseArguments());
         }
         return term;

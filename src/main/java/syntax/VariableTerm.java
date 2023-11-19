@@ -7,13 +7,18 @@ import java.util.Set;
 /**
  * A representation of a variable term
  */
-public final class VariableTermNode extends TermNode {
+public final class VariableTerm extends Term {
     /**
      * Creates a constant term node with provided name.
      * @param name name of the constant
      */
-    VariableTermNode(final @NotNull String name) {
+    VariableTerm(final @NotNull String name) {
         super(name);
+    }
+
+    @Override
+    public Term deepCopy() {
+        return new VariableTerm(this.getName());
     }
 
     @Override

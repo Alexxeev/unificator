@@ -1,5 +1,6 @@
-import syntax.TermNode;
-import unification.Unification;
+import syntax.Term;
+import unification.DisagreementSetUnificationStrategy;
+import unification.UnificationResult;
 
 /**
  * Console application main class
@@ -15,10 +16,10 @@ public class Main {
             System.out.println("Provide two terms enclosed in the double quotes");
             System.exit(1);
         }
-        TermNode term1 = TermNode.fromString(args[0]);
-        TermNode term2 = TermNode.fromString(args[1]);
+        Term term1 = Term.fromString(args[0]);
+        Term term2 = Term.fromString(args[1]);
 
-        Unification.UnificationResult unificationResult = Unification.findUnifier(term1, term2);
+        UnificationResult unificationResult = new DisagreementSetUnificationStrategy().findUnifier(term1, term2);
         if (unificationResult.isUnifiable()) {
             System.out.println("Found unifier for the terms:");
             System.out.println("- " + args[0]);

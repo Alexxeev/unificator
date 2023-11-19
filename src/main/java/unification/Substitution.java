@@ -1,7 +1,7 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.TermNode;
+import syntax.Term;
 
 import java.util.Map;
 import java.util.Objects;
@@ -33,18 +33,24 @@ public interface Substitution {
      */
     static Substitution of(
             @NotNull final String variable,
-            @NotNull final TermNode replacementTerm) {
+            @NotNull final Term replacementTerm) {
         return new ListSubstitution(Map.of(
                 Objects.requireNonNull(variable),
                 Objects.requireNonNull(replacementTerm)));
     }
 
-    static Substitution of(final Map<String, TermNode> domain) {
+    /**
+     * Creates a new substitution with provided domain
+     * @param domain set of variable-term mappings
+     * @return A substitution with domain consisting of
+     * provided variable.
+     */
+    static Substitution of(final Map<String, Term> domain) {
         return new ListSubstitution(domain);
     }
 
     /**
-     * Applies substitution to the provided term.
+     * Applies substitution to the copy of the provided term.
      * Returned term will have all instances of variables
      * contained in the domain of substitution replaced by
      * corresponding terms
@@ -53,7 +59,22 @@ public interface Substitution {
      * @return Term with variables in the domain of this substitution
      *         replaced by corresponding terms.
      */
-    TermNode instantiateVariables(TermNode term);
+    Term instantiateVariables(Term term);
+
+    /**
+     * Applies substitution to the provided term.
+     * Returned term will have all instances of variables
+     * contained in the domain of substitution replaced by
+     * corresponding terms
+     * <p>
+     * Note: this operation is destructive and modifies the
+     * term if the term contains functional symbols
+     *
+     * @param term A term to substitute variables in
+     * @return Term with variables in the domain of this substitution
+     *         replaced by corresponding terms.
+     */
+    Term instantiateVariablesInPlace(Term term);
 
     /**
      * Performs a composition operation on this substitution
@@ -73,7 +94,7 @@ public interface Substitution {
      * @return Result of composition of this substitution with
      *         other substitution.
      */
-    Substitution composition(String variable, TermNode replacementTerm);
+    Substitution composition(String variable, Term replacementTerm);
 
     /**
      * Returns a map which entries are pairs of variables and
@@ -82,5 +103,5 @@ public interface Substitution {
      * @return A map which entries are pairs of variables and
      *         corresponding replacement term.
      */
-    Map<String, TermNode> domain();
+    Map<String, Term> domain();
 }
