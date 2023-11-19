@@ -153,7 +153,7 @@ public abstract class Term {
      * String representation is of the following formats:<br>
      * c&lt;<i>index</i>&gt; - constant<br>
      * x&lt;<i>index</i>&gt; - variable<br>
-     * <i></>f</i>&lt;<i>index</i>&gt;<i>(</i>
+     * <i>f</i>&lt;<i>index</i>&gt;<i>(</i>
      * &lt;<i>term</i>&gt;<i>,</i>&lt;<i>term</i>&gt;<i>...</i>&lt;<i>term</i>&gt;
      * <i>)</i> - term with functional symbol of arity &gt; 0
      * <br>
