@@ -1,5 +1,9 @@
 package unification;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
 /**
  * Represents a result of unification of input set.
  * It contains status of unification (successful unification
@@ -14,4 +18,22 @@ public record UnificationResult(
         boolean isUnifiable,
         Substitution unifier
 ) {
+    /**
+     * Creates a result of successful unification process
+     * @param unifier a unifier
+     * @return a new {@code UnificationResult} that contains result of
+     *         successful unification process
+     */
+    public static UnificationResult unifiable(@NotNull Substitution unifier) {
+        return new UnificationResult(true, Objects.requireNonNull(unifier));
+    }
+
+    /**
+     * Creates a result of unsuccessful unification process
+     * @return a new {@code UnificationResult} that contains result of
+     *         unsuccessful unification process
+     */
+    public static UnificationResult notUnifiable() {
+        return new UnificationResult(false, Substitution.identity());
+    }
 }
