@@ -129,8 +129,7 @@ public abstract class Term {
 
     /**
      * Returns the name of this term node. Name has the following format:
-     * <p>
-     * <p>
+     * <br>
      * &lt;prefixCharacter&gt;&lt;indexDigits&gt;
      *
      * @return string representation of node name
@@ -150,14 +149,14 @@ public abstract class Term {
     /**
      * Returns a string representation of the syntax tree
      * rooted at this node
-     * <p>
+     * <br>
      * String representation is of the following formats:<br>
      * c&lt;<i>index</i>&gt; - constant<br>
      * x&lt;<i>index</i>&gt; - variable<br>
      * <i></>f</i>&lt;<i>index</i>&gt;<i>(</i>
      * &lt;<i>term</i>&gt;<i>,</i>&lt;<i>term</i>&gt;<i>...</i>&lt;<i>term</i>&gt;
      * <i>)</i> - term with functional symbol of arity &gt; 0
-     * <p>
+     * <br>
      *
      * @return a string representation of the syntax tree
      *      rooted at this node
