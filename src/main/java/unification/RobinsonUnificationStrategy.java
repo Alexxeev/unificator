@@ -8,57 +8,58 @@ import syntax.VariableTerm;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Stack;
 
 /**
  * An implementation of Robinson's unification algorithm
  */
 public class RobinsonUnificationStrategy implements UnificationStrategy {
-    private Substitution substitution;
-    private boolean isUnifiable = true;
-
     @Override
     public UnificationResult findUnifier(@NotNull Term term1, @NotNull Term term2) {
         Objects.requireNonNull(term1);
         Objects.requireNonNull(term2);
-        substitution = Substitution.identity();
-        findUnifierRecursive(term1.deepCopy(), term2.deepCopy());
-        return new UnificationResult(
-                isUnifiable,
-                isUnifiable ? substitution : Substitution.identity());
-    }
-
-    private void findUnifierRecursive(@NotNull Term term1, @NotNull Term term2) {
-        if (term1 instanceof VariableTerm) {
-            term1 = substitution.instantiateVariablesInPlace(term1);
-        }
-        if (term2 instanceof VariableTerm) {
-            term2 = substitution.instantiateVariablesInPlace(term2);
-        }
-        if (term1 instanceof VariableTerm
-                && Objects.equals(term1.getName(), term2.getName())) {
-        } else if (term1 instanceof FunctionalSymbolTerm functionalSymbolTermNode1
-                && term2 instanceof FunctionalSymbolTerm functionalSymbolTermNode2) {
-            String name1 = functionalSymbolTermNode1.getName();
-            String name2 = functionalSymbolTermNode2.getName();
-            List<Term> children1 = functionalSymbolTermNode1.getChildren();
-            List<Term> children2 = functionalSymbolTermNode2.getChildren();
-            if (!name1.equals(name2) || children1.size() != children2.size()) {
-                isUnifiable = false;
-                return;
+        Substitution substitution = Substitution.identity();
+        Stack<Term> termStack = new Stack<>();
+        termStack.push(term1);
+        termStack.push(term2);
+        while (!termStack.isEmpty()) {
+            Term currentTerm2 = termStack.pop();
+            Term currentTerm1 = termStack.pop();
+            if (currentTerm1 instanceof VariableTerm) {
+                currentTerm1 = substitution.instantiateVariablesInPlace(currentTerm1);
             }
-            for (int i = 0; i < children1.size(); i++) {
-                findUnifierRecursive(children1.get(i), children2.get(i));
+            if (currentTerm2 instanceof VariableTerm) {
+                currentTerm2 = substitution.instantiateVariablesInPlace(currentTerm2);
             }
-        } else if (term1 instanceof ConstantTerm && term2 instanceof ConstantTerm) {
-            if (!term1.getName().equals(term2.getName())) {
-                isUnifiable = false;
+            if (currentTerm1 instanceof VariableTerm
+                    && Objects.equals(currentTerm1.getName(), currentTerm2.getName())) {
+                // Do nothing
+            } else if (currentTerm1 instanceof FunctionalSymbolTerm functionalSymbolTermNode1
+                    && currentTerm2 instanceof FunctionalSymbolTerm functionalSymbolTermNode2) {
+                String name1 = functionalSymbolTermNode1.getName();
+                String name2 = functionalSymbolTermNode2.getName();
+                List<Term> children1 = functionalSymbolTermNode1.getChildren();
+                List<Term> children2 = functionalSymbolTermNode2.getChildren();
+                if (!name1.equals(name2) || children1.size() != children2.size()) {
+                    return UnificationResult.notUnifiable();
+                }
+                for (int i = children1.size() - 1; i >= 0; i--) {
+                    termStack.push(children1.get(i));
+                    termStack.push(children2.get(i));
+                }
+            } else if (currentTerm1 instanceof ConstantTerm && currentTerm2 instanceof ConstantTerm) {
+                if (!currentTerm1.getName().equals(currentTerm2.getName())) {
+                    return UnificationResult.notUnifiable();
+                }
+            } else if (!(currentTerm1 instanceof VariableTerm)) {
+                termStack.push(currentTerm2);
+                termStack.push(currentTerm1);
+            } else if (currentTerm2.getDomain().contains(currentTerm1.toString())) {
+                return UnificationResult.notUnifiable();
+            } else {
+                substitution = substitution.composition(currentTerm1.getName(), currentTerm2);
             }
-        } else if (!(term1 instanceof VariableTerm)) {
-            findUnifierRecursive(term2, term1);
-        } else if (term2.getDomain().contains(term1.toString())) {
-            isUnifiable = false;
-        } else {
-            substitution = substitution.composition(term1.getName(), term2);
         }
+        return UnificationResult.unifiable(substitution);
     }
 }
