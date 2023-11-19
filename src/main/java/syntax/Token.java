@@ -54,6 +54,11 @@ record Token(
          */
         private final char relatedCharacter;
 
+        /**
+         * Creates a new token type with provided character associated
+         * with this token type
+         * @param relatedCharacter character associated with this token type
+         */
         Type(final char relatedCharacter) {
             this.relatedCharacter = relatedCharacter;
         }

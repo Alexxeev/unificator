@@ -16,6 +16,9 @@ import java.util.Set;
  * and a list of child terms.
  */
 public final class FunctionalSymbolTerm extends Term {
+    /**
+     * A list that contains children nodes of this term
+     */
     private final List<Term> children = new ArrayList<>();
 
     /**
@@ -51,6 +54,12 @@ public final class FunctionalSymbolTerm extends Term {
         return domain;
     }
 
+    /**
+     * Inserts the specified term node as a child node
+     * in the end of the child node list.
+     *
+     * @param term node to be inserted.
+     */
     public void addChild(final @NotNull Term term) {
         children.add(term);
     }

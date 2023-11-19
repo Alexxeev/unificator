@@ -9,6 +9,9 @@ import syntax.VariableTerm;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * An implementation of Robinson's unification algorithm
+ */
 public class RobinsonUnificationStrategy implements UnificationStrategy {
     private Substitution substitution;
     private boolean isUnifiable = true;

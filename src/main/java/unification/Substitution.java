@@ -39,6 +39,12 @@ public interface Substitution {
                 Objects.requireNonNull(replacementTerm)));
     }
 
+    /**
+     * Creates a new substitution with provided domain
+     * @param domain set of variable-term mappings
+     * @return A substitution with domain consisting of
+     * provided variable.
+     */
     static Substitution of(final Map<String, Term> domain) {
         return new ListSubstitution(domain);
     }
