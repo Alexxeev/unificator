@@ -17,6 +17,11 @@ public final class ConstantTerm extends Term {
     }
 
     @Override
+    protected StringBuilder constructTermString(StringBuilder sb) {
+        return sb.append(getName());
+    }
+
+    @Override
     public Term deepCopy() {
         return new ConstantTerm(this.getName());
     }

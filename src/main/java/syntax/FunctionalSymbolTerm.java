@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Objects;
 import java.util.Set;
 
@@ -27,6 +28,21 @@ public final class FunctionalSymbolTerm extends Term {
      */
     FunctionalSymbolTerm(final @NotNull String name) {
         super(name);
+    }
+
+    @Override
+    protected StringBuilder constructTermString(StringBuilder sb) {
+        sb.append(getName());
+        sb.append("(");
+        int childrenCount = children.size();
+        for (int i = 0; i < childrenCount; i++) {
+            children.get(i).constructTermString(sb);
+            if (i < childrenCount - 1) {
+                sb.append(",");
+            }
+        }
+        sb.append(")");
+        return sb;
     }
 
     @Override

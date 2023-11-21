@@ -86,29 +86,29 @@ public abstract class Term {
      * Recursively builds string representation of syntax tree
      * rooted at the provided node
      * @param sb a string builder
-     * @param term root node of the syntax tree
      * @return a {@code StringBuilder} instance that contains
      *          a string representation of the syntax tree
      */
-    private StringBuilder constructTermString(StringBuilder sb, Term term) {
-        sb.append(term.getName());
-        if (!(term instanceof FunctionalSymbolTerm)) {
-            return sb;
-        }
-        sb.append("(");
-        int i = 0;
-        List<Term> children = ((FunctionalSymbolTerm)term).getChildren();
-        int indexOfLastItem = children.size() - 1;
-        for (Term child : children) {
-            constructTermString(sb, child);
-            if (i < indexOfLastItem) {
-                sb.append(",");
-            }
-            i++;
-        }
-        sb.append(")");
-        return sb;
-    }
+    protected abstract StringBuilder constructTermString(StringBuilder sb);
+//    {
+//        sb.append(term.getName());
+//        if (!(term instanceof FunctionalSymbolTerm)) {
+//            return sb;
+//        }
+//        sb.append("(");
+//        int i = 0;
+//        List<Term> children = ((FunctionalSymbolTerm)term).getChildren();
+//        int indexOfLastItem = children.size() - 1;
+//        for (Term child : children) {
+//            constructTermString(sb, child);
+//            if (i < indexOfLastItem) {
+//                sb.append(",");
+//            }
+//            i++;
+//        }
+//        sb.append(")");
+//        return sb;
+//    }
 
     /**
      * Returns a deep copy of the tree.
@@ -164,6 +164,6 @@ public abstract class Term {
     @Override
     public String toString() {
         return constructTermString(
-                new StringBuilder(), this).toString();
+                new StringBuilder()).toString();
     }
 }
