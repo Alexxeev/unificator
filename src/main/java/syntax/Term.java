@@ -90,25 +90,6 @@ public abstract class Term {
      *          a string representation of the syntax tree
      */
     protected abstract StringBuilder constructTermString(StringBuilder sb);
-//    {
-//        sb.append(term.getName());
-//        if (!(term instanceof FunctionalSymbolTerm)) {
-//            return sb;
-//        }
-//        sb.append("(");
-//        int i = 0;
-//        List<Term> children = ((FunctionalSymbolTerm)term).getChildren();
-//        int indexOfLastItem = children.size() - 1;
-//        for (Term child : children) {
-//            constructTermString(sb, child);
-//            if (i < indexOfLastItem) {
-//                sb.append(",");
-//            }
-//            i++;
-//        }
-//        sb.append(")");
-//        return sb;
-//    }
 
     /**
      * Returns a deep copy of the tree.
