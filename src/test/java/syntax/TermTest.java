@@ -62,4 +62,18 @@ class TermTest {
         assertEquals(originalTerm.toString(), copyTerm.toString());
         assertNotSame(originalTerm, copyTerm);
     }
+
+    @Test
+    public void toString_SubtermModified_ShouldModifyParentTerm() {
+        Term subterm = Term.fromString("f1(c,x)");
+        Term term = Term.fromToken(new Token(Token.Type.FUNCTIONAL_SYMBOL, ""));
+        FunctionalSymbolTerm functionalSymbolTerm = (FunctionalSymbolTerm) term;
+        functionalSymbolTerm.addChild(subterm);
+        functionalSymbolTerm.addChild(subterm);
+
+        FunctionalSymbolTerm functionalSymbolSubterm = (FunctionalSymbolTerm) subterm;
+        functionalSymbolSubterm.setChild(1, Term.fromString("c1"));
+
+        assertEquals("f(f1(c,c1),f1(c,c1))", functionalSymbolTerm.toString());
+    }
 }
