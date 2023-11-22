@@ -1,6 +1,7 @@
 package syntax;
 
 import org.jetbrains.annotations.NotNull;
+import util.Assertions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +25,8 @@ final class TermDagParser {
     private final Map<Term, Term> uniqueTerms = new HashMap<>();
 
     public Term parseTerm() {
-        if (!tokenIterator.hasNext()) {
-            throw new IllegalArgumentException("Unexpected EOF while reading tokens");
-        }
+        Assertions.check(tokenIterator.hasNext(),
+                "Unexpected EOF while reading tokens");
         Term term = Term.fromToken(tokenIterator.next());
         if (term instanceof FunctionalSymbolTerm functionalSymbolTerm) {
             parseArguments(functionalSymbolTerm);
@@ -39,10 +39,8 @@ final class TermDagParser {
     }
 
     private void parseArguments(FunctionalSymbolTerm term) {
-        if (tokenIterator.next().tokenType() != Token.Type.LEFT_PARENTHESIS) {
-            throw new IllegalArgumentException(
-                    "expected a left parenthesis after functional symbol");
-        }
+        Assertions.check(tokenIterator.next().tokenType() == Token.Type.LEFT_PARENTHESIS,
+                "expected a left parenthesis after functional symbol");
         while (tokenIterator.hasNext()) {
             Term argument = parseTerm();
             argument.addParent(term);
@@ -51,10 +49,8 @@ final class TermDagParser {
             if (tokenType == Token.Type.RIGHT_PARENTHESIS) {
                 return;
             }
-            if (tokenType != Token.Type.COMMA) {
-                throw new IllegalArgumentException(
-                        "expected a comma or right parenthesis after an argument");
-            }
+            Assertions.check(tokenType == Token.Type.COMMA,
+                    "expected a comma or right parenthesis after an argument");
         }
         throw new IllegalArgumentException("Unexpected EOF while reading arguments");
     }

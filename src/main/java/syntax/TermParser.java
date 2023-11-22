@@ -1,6 +1,7 @@
 package syntax;
 
 import org.jetbrains.annotations.NotNull;
+import util.Assertions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +32,8 @@ final class TermParser {
      * @return list of term nodes
      */
     private List<Term> parseArguments() {
-        if (tokenIterator.next().tokenType() != Token.Type.LEFT_PARENTHESIS) {
-            throw new IllegalArgumentException(
-                    "expected a left parenthesis after functional symbol");
-        }
+        Assertions.check(tokenIterator.next().tokenType() == Token.Type.LEFT_PARENTHESIS,
+                "expected a left parenthesis after functional symbol");
         List<Term> arguments = new ArrayList<>();
         while (tokenIterator.hasNext()) {
             arguments.add(parseTerm());
@@ -42,10 +41,8 @@ final class TermParser {
             if (tokenType == Token.Type.RIGHT_PARENTHESIS) {
                 return arguments;
             }
-            if (tokenType != Token.Type.COMMA) {
-                throw new IllegalArgumentException(
-                        "expected a comma or right parenthesis after an argument");
-            }
+            Assertions.check(tokenType == Token.Type.COMMA,
+                    "expected a comma or right parenthesis after an argument");
         }
         throw new IllegalArgumentException("Unexpected EOF while reading arguments");
     }
