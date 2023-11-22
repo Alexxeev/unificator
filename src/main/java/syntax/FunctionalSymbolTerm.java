@@ -128,4 +128,19 @@ public final class FunctionalSymbolTerm extends Term {
         return getChildren().isEmpty();
     }
 
+    @Override
+    public int hashCode() {
+        return 31 * getName().hashCode() + getChildren().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof FunctionalSymbolTerm functionalSymbolTerm) {
+            return getName().equals(functionalSymbolTerm.getName())
+                    && getChildren().equals(functionalSymbolTerm.getChildren());
+        }
+        return false;
+    }
 }

@@ -2,6 +2,7 @@ package syntax;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -37,4 +38,18 @@ public final class VariableTerm extends Term {
     }
 
 
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof VariableTerm variableTerm) {
+            return getName().equals(variableTerm.getName());
+        }
+        return false;
+    }
 }

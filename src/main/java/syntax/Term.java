@@ -3,6 +3,8 @@ package syntax;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.StringCharacterIterator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -75,11 +77,28 @@ public abstract class Term {
     private final String name;
 
     /**
+     * Parent nodes
+     */
+    private final List<Term> parents = new ArrayList<>();
+
+    /**
      * Creates a new term node with provided name
      * @param name name of the node
      */
     protected Term(@NotNull final String name) {
         this.name = Objects.requireNonNull(name);
+    }
+
+    public void addParent(@NotNull final Term parent) {
+        parents.add(Objects.requireNonNull(parent));
+    }
+
+    public List<Term> getParents() {
+        return Collections.unmodifiableList(parents);
+    }
+
+    public void prependParents(@NotNull final List<Term> newParents) {
+        parents.addAll(0, Objects.requireNonNull(newParents));
     }
 
     /**

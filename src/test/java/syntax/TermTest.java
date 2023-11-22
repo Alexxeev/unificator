@@ -76,4 +76,41 @@ class TermTest {
 
         assertEquals("f(f1(c,c1),f1(c,c1))", functionalSymbolTerm.toString());
     }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "c1",
+            "x1",
+            "f1(x1,c1)",
+            "f1(x1,f2(c1))",
+            "f3(f2(x1),x1,f1(f2(x2)))"
+    })
+    public void equals_ShouldBeReflective(String termString) {
+        Term term = Term.fromString(termString);
+
+        assertEquals(term, term);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "c1",
+            "x1",
+            "f1(x1,c1)",
+            "f1(x1,f2(c1))",
+            "f3(f2(x1),x1,f1(f2(x2)))"
+    })
+    public void equals_ShouldBeSymmetric(String termString) {
+        Term term1 = Term.fromString(termString);
+        Term term2 = Term.fromString(termString);
+
+        assertEquals(term1, term2);
+        assertEquals(term2, term1);
+    }
+
+    @Test
+    public void equals_shouldBeFalseForNull() {
+        Term term = Term.fromString("f1(c,x)");
+
+        assertNotEquals(null, term);
+    }
 }

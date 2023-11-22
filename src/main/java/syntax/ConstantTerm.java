@@ -2,6 +2,7 @@ package syntax;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -34,5 +35,20 @@ public final class ConstantTerm extends Term {
     @Override
     public boolean isLeafNode() {
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof ConstantTerm constantTerm) {
+            return Objects.equals(this.getName(), constantTerm.getName());
+        }
+        return false;
     }
 }
