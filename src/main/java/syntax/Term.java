@@ -66,14 +66,6 @@ public abstract class Term {
     }
 
     /**
-     * Returns a leaf term node with empty name field.
-     * @return instance of empty token.
-     */
-    public static Term empty() {
-        return new ConstantTerm("");
-    }
-
-    /**
      * Name of this node
      */
     private final String name;
