@@ -99,10 +99,6 @@ public abstract class Term {
         return Collections.unmodifiableList(parents);
     }
 
-    public void prependParents(@NotNull final List<Term> newParents) {
-        parents.addAll(0, Objects.requireNonNull(newParents));
-    }
-
     /**
      * Recursively builds string representation of syntax tree
      * rooted at the provided node
