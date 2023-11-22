@@ -9,6 +9,8 @@ import syntax.Term;
  * terms
  */
 public interface UnificationStrategy {
+    UnificationStrategy ROBINSON = new RobinsonUnificationStrategy();
+
     /**
      * Finds a unifier of set of two terms.
      *

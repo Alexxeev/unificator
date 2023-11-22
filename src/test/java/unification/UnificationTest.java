@@ -17,7 +17,7 @@ class UnificationTest {
         Term term1 = Term.fromString(termString1);
         Term term2 = Term.fromString(termString2);
 
-        UnificationResult unificationResult = new RobinsonUnificationStrategy().findUnifier(term1, term2);
+        UnificationResult unificationResult = UnificationStrategy.ROBINSON.findUnifier(term1, term2);
 
         assertTrue(unificationResult.isUnifiable());
         Substitution unifier = unificationResult.unifier();

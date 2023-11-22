@@ -1,6 +1,6 @@
 import syntax.Term;
-import unification.RobinsonUnificationStrategy;
 import unification.UnificationResult;
+import unification.UnificationStrategy;
 
 /**
  * Console application main class
@@ -19,7 +19,7 @@ public class Main {
         Term term1 = Term.fromString(args[0]);
         Term term2 = Term.fromString(args[1]);
 
-        UnificationResult unificationResult = new RobinsonUnificationStrategy().findUnifier(term1, term2);
+        UnificationResult unificationResult = UnificationStrategy.ROBINSON.findUnifier(term1, term2);
         if (unificationResult.isUnifiable()) {
             System.out.println("Found unifier for the terms:");
             System.out.println("- " + args[0]);
