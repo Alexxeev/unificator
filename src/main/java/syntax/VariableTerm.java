@@ -2,6 +2,7 @@ package syntax;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,8 +24,16 @@ public final class VariableTerm extends Term {
     }
 
     @Override
-    public Term deepCopy() {
-        return new VariableTerm(this.getName());
+    protected Term deepCopy(Map<Term, Term> isomorphism) {
+        Term copy = isomorphism.get(this);
+        if (copy == null) {
+            copy = new VariableTerm(getName());
+            isomorphism.put(this, copy);
+            for (Term parent : getParents()) {
+                copy.addParent(parent.deepCopy(isomorphism));
+            }
+        }
+        return copy;
     }
 
     @Override

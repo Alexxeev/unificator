@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.text.StringCharacterIterator;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class TermTest {
@@ -59,8 +62,27 @@ class TermTest {
 
         Term copyTerm = originalTerm.deepCopy();
 
-        assertEquals(originalTerm.toString(), copyTerm.toString());
+        assertEquals(originalTerm, copyTerm);
         assertNotSame(originalTerm, copyTerm);
+    }
+
+    @Test
+    public void deepCopy_ShouldPreserveIdentities() {
+        Term originalTerm = new TermDagParser(
+                new TokenIterator(
+                        new StringCharacterIterator("f(f1(x,c),f1(x,c))")
+                )
+        ).parseTerm();
+
+        Term copyTerm = originalTerm.deepCopy();
+
+        assertInstanceOf(FunctionalSymbolTerm.class, copyTerm);
+        List<Term> children = ((FunctionalSymbolTerm)copyTerm).getChildren();
+        assertEquals(2, children.size());
+        Term child1 = children.get(0);
+        Term child2 = children.get(1);
+        assertSame(child1, child2);
+        assertSame(child1.getParents().get(0), child2.getParents().get(0));
     }
 
     @Test

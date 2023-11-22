@@ -5,9 +5,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -46,11 +48,18 @@ public final class FunctionalSymbolTerm extends Term {
     }
 
     @Override
-    public Term deepCopy() {
-        final FunctionalSymbolTerm copy = new FunctionalSymbolTerm(
-                this.getName());
-        for (Term child : this.getChildren()) {
-            copy.addChild(child.deepCopy());
+    protected Term deepCopy(Map<Term, Term> isomorphism) {
+        FunctionalSymbolTerm copy = (FunctionalSymbolTerm) isomorphism.get(this);
+        if (copy == null) {
+            copy = new FunctionalSymbolTerm(
+                    this.getName());
+            isomorphism.put(this, copy);
+            for (Term child : this.getChildren()) {
+                copy.addChild(child.deepCopy(isomorphism));
+            }
+            for (Term parent : this.getParents()) {
+                copy.addParent(parent.deepCopy(isomorphism));
+            }
         }
         return copy;
     }

@@ -5,7 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -115,7 +117,12 @@ public abstract class Term {
      *
      * @return deep copy of the tree.
      */
-    public abstract Term deepCopy();
+    public Term deepCopy() {
+        final Map<Term, Term> isomorphism = new IdentityHashMap<>();
+        return deepCopy(isomorphism);
+    }
+
+    protected abstract Term deepCopy(Map<Term, Term> isomorphism);
 
     /**
      * Returns a set of variables that are present in this term.
