@@ -6,6 +6,7 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -15,7 +16,7 @@ import java.util.Set;
  * A node of first-order term syntax tree.
  * It is identified by its name and type.
  */
-public abstract class Term {
+public abstract class Term implements Iterable<Term> {
     /**
      * Creates a new node with provided token.
      *
@@ -222,5 +223,11 @@ public abstract class Term {
     public String toString() {
         return constructTermString(
                 new StringBuilder()).toString();
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Term> iterator() {
+        return new TermIterator(this);
     }
 }

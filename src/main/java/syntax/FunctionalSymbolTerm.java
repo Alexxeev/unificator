@@ -64,12 +64,8 @@ public final class FunctionalSymbolTerm extends Term {
 
     @Override
     public Set<String> getDomain() {
-        Iterator<Term> termNodeIterator = new TermIterator(
-                this
-        );
         Set<String> domain = new HashSet<>();
-        while (termNodeIterator.hasNext()) {
-            Term term = termNodeIterator.next();
+        for (Term term : this) {
             if (term instanceof VariableTerm) {
                 domain.add(term.getName());
             }
