@@ -12,7 +12,7 @@ import java.util.Objects;
  * This iterator allows to tokenize provided
  * character sequence and traverse through tokens.
  */
-class TokenIterator implements Iterator<Token> {
+final class TokenIterator implements Iterator<Token> {
     /**
      * A variable prefix
      */
@@ -40,6 +40,7 @@ class TokenIterator implements Iterator<Token> {
     /**
      * Maps symbols to the corresponding token types
      */
+    @NotNull
     private static final Map<Character, Token.Type> TOKEN_TYPE =
             Map.of(
                     LEFT_PARENTHESIS,  Token.Type.LEFT_PARENTHESIS,
@@ -58,6 +59,7 @@ class TokenIterator implements Iterator<Token> {
     /**
      * An iterator over characters of the input term
      */
+    @NotNull
     private final CharacterIterator characterIterator;
 
     /**
@@ -164,6 +166,7 @@ class TokenIterator implements Iterator<Token> {
      *
      * @return string of digits
      */
+    @NotNull
     private String readLettersAndDigits() {
         StringBuilder sb = new StringBuilder();
         while (characterIterator.current() != CharacterIterator.DONE) {
@@ -182,6 +185,7 @@ class TokenIterator implements Iterator<Token> {
         return firstTime || characterIterator.getIndex() < characterIterator.getEndIndex() - 1;
     }
 
+    @NotNull
     @Override
     public Token next() {
         if (!hasNext()) {

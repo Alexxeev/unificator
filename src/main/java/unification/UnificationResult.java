@@ -24,8 +24,10 @@ public record UnificationResult(
      * @return a new {@code UnificationResult} that contains result of
      *         successful unification process
      */
-    public static UnificationResult unifiable(@NotNull Substitution unifier) {
-        return new UnificationResult(true, Objects.requireNonNull(unifier));
+    @NotNull
+    public static UnificationResult unifiable(@NotNull final Substitution unifier) {
+        return new UnificationResult(
+                true, Objects.requireNonNull(unifier));
     }
 
     /**
@@ -33,6 +35,7 @@ public record UnificationResult(
      * @return a new {@code UnificationResult} that contains result of
      *         unsuccessful unification process
      */
+    @NotNull
     public static UnificationResult notUnifiable() {
         return new UnificationResult(false, Substitution.identity());
     }

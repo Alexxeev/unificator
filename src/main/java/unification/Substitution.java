@@ -19,6 +19,7 @@ public interface Substitution {
      * empty domain.
      * @return an identity substitution
      */
+    @NotNull
     static Substitution identity() {
         return new ListSubstitution(Map.of());
     }
@@ -31,6 +32,7 @@ public interface Substitution {
      * @return A substitution with domain consisting of
      * provided variable.
      */
+    @NotNull
     static Substitution of(
             @NotNull final String variable,
             @NotNull final Term replacementTerm) {
@@ -45,8 +47,9 @@ public interface Substitution {
      * @return A substitution with domain consisting of
      * provided variable.
      */
-    static Substitution of(final Map<String, Term> domain) {
-        return new ListSubstitution(domain);
+    @NotNull
+    static Substitution of(final @NotNull Map<String, Term> domain) {
+        return new ListSubstitution(Objects.requireNonNull(domain));
     }
 
     /**
@@ -59,6 +62,7 @@ public interface Substitution {
      * @return Term with variables in the domain of this substitution
      *         replaced by corresponding terms.
      */
+    @NotNull
     Term instantiateVariables(Term term);
 
     /**
@@ -74,6 +78,7 @@ public interface Substitution {
      * @return Term with variables in the domain of this substitution
      *         replaced by corresponding terms.
      */
+    @NotNull
     Term instantiateVariablesInPlace(Term term);
 
     /**
@@ -83,7 +88,8 @@ public interface Substitution {
      * @return Result of composition of this substitution with
      *         other substitution.
      */
-    Substitution composition(Substitution other);
+    @NotNull
+    Substitution composition(@NotNull final Substitution other);
 
     /**
      * Performs a composition operation on this substitution
@@ -94,7 +100,10 @@ public interface Substitution {
      * @return Result of composition of this substitution with
      *         other substitution.
      */
-    Substitution composition(String variable, Term replacementTerm);
+    @NotNull
+    Substitution composition(
+            @NotNull final String variable,
+            @NotNull final Term replacementTerm);
 
     /**
      * Returns a map which entries are pairs of variables and
@@ -103,5 +112,6 @@ public interface Substitution {
      * @return A map which entries are pairs of variables and
      *         corresponding replacement term.
      */
+    @NotNull
     Map<String, Term> domain();
 }

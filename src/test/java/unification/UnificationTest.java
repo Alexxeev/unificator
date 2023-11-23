@@ -9,15 +9,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class UnificationTest {
     @ParameterizedTest
     @CsvSource(value = {
+            "f(x,f1(c));f(f1(c),f1(x1))",
             "f3(f2(x1),x1,f2(x2));f3(x3,c1,x3)",
             "f3(f2(x1),x1,f1(f2(x2)));f3(x3,c1,f1(x3))"
 
     }, delimiter = ';')
-    public void testUnification_termsAreUnifiable(String termString1, String termString2) {
-        Term term1 = Term.fromString(termString1);
-        Term term2 = Term.fromString(termString2);
+    public void testRobinsonUnification_termsAreUnifiable(String termString1, String termString2) {
+        Term term1 = Term.dagFromString(termString1);
+        Term term2 = Term.dagFromString(termString2);
 
-        UnificationResult unificationResult = new DisagreementSetUnificationStrategy().findUnifier(term1, term2);
+        UnificationResult unificationResult = UnificationStrategy.ROBINSON.findUnifier(term1, term2);
 
         assertTrue(unificationResult.isUnifiable());
         Substitution unifier = unificationResult.unifier();
@@ -27,15 +28,16 @@ class UnificationTest {
 
     @ParameterizedTest
     @CsvSource(value = {
+            "f(x,f1(c));f(f1(c),f1(x1))",
             "f3(f2(x1),x1,f2(x2));f3(x3,c1,x3)",
             "f3(f2(x1),x1,f1(f2(x2)));f3(x3,c1,f1(x3))"
 
     }, delimiter = ';')
-    public void testRobinsonUnification_termsAreUnifiable(String termString1, String termString2) {
-        Term term1 = Term.fromString(termString1);
-        Term term2 = Term.fromString(termString2);
+    public void testPolynomialRobinsonUnification_termsAreUnifiable(String termString1, String termString2) {
+        Term term1 = Term.dagFromString(termString1);
+        Term term2 = Term.dagFromString(termString2);
 
-        UnificationResult unificationResult = new RobinsonUnificationStrategy().findUnifier(term1, term2);
+        UnificationResult unificationResult = UnificationStrategy.ROBINSON_POLYNOMIAL.findUnifier(term1, term2);
 
         assertTrue(unificationResult.isUnifiable());
         Substitution unifier = unificationResult.unifier();

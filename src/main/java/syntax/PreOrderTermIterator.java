@@ -15,15 +15,15 @@ import java.util.Stack;
  * This class uses pre-order depth-first traversal method to
  * iterate over nodes of the syntax tree
  */
-public final class TermIterator implements Iterator<Term> {
+final class PreOrderTermIterator implements Iterator<Term> {
     /**
      * Contains nodes to be traversed
      */
     private final Stack<Term> nodeStack = new Stack<>();
     /**
-     * A current node
+     * A current term
      */
-    private Term currentNode;
+    private Term currentTerm;
     /**
      * A flag that determines if iterator is not yet accessed
      */
@@ -35,24 +35,24 @@ public final class TermIterator implements Iterator<Term> {
      *
      * @param root root node of the syntax tree
      */
-    public TermIterator(
+    public PreOrderTermIterator(
             final @NotNull Term root) {
-        currentNode = Objects.requireNonNull(root);
+        currentTerm = Objects.requireNonNull(root);
     }
 
     @Override
     public boolean hasNext() {
-        return firstTime || !currentNode.isLeafNode() || !nodeStack.isEmpty();
+        return firstTime || !currentTerm.isLeafNode() || !nodeStack.isEmpty();
     }
 
     @Override
     public Term next() {
         if (firstTime) {
             firstTime = false;
-            return currentNode;
+            return currentTerm;
         }
-        if (currentNode instanceof FunctionalSymbolTerm functionalSymbolTermNode) {
-            List<Term> children = functionalSymbolTermNode.getChildren();
+        if (currentTerm instanceof FunctionalSymbolTerm) {
+            List<Term> children = currentTerm.getChildren();
             ListIterator<Term> iterator =
                     children.listIterator(children.size());
             while (iterator.hasPrevious()) {
@@ -63,7 +63,7 @@ public final class TermIterator implements Iterator<Term> {
         if (nodeStack.isEmpty()) {
             throw new NoSuchElementException();
         }
-        currentNode = nodeStack.pop();
-        return currentNode;
+        currentTerm = nodeStack.pop();
+        return currentTerm;
     }
 }

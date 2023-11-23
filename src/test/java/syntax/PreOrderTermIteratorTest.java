@@ -20,7 +20,7 @@ class TermIteratorTest {
                 "x2"
         };
 
-        Iterator<Term> iterator = new TermIterator(term);
+        Iterator<Term> iterator = new PreOrderTermIterator(term);
         int count = 0;
 
         while (iterator.hasNext()) {

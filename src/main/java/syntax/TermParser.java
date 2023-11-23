@@ -1,14 +1,17 @@
 package syntax;
 
 import org.jetbrains.annotations.NotNull;
+import util.Assertions;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * This class provides methods to create syntax tree of first-order term.
- * This class uses recursive descent algorithm to construct syntax tree.
+ * This class provides methods to create syntax
+ * tree of the provided first-order term.
+ * This class uses recursive descent algorithm
+ * to construct syntax tree.
  */
 final class TermParser {
     /**
@@ -23,6 +26,7 @@ final class TermParser {
     /**
      * A token iterator
      */
+    @NotNull
     private final TokenIterator tokenIterator;
 
     /**
@@ -30,11 +34,10 @@ final class TermParser {
      *
      * @return list of term nodes
      */
+    @NotNull
     private List<Term> parseArguments() {
-        if (tokenIterator.next().tokenType() != Token.Type.LEFT_PARENTHESIS) {
-            throw new IllegalArgumentException(
-                    "expected a left parenthesis after functional symbol");
-        }
+        Assertions.check(tokenIterator.next().tokenType() == Token.Type.LEFT_PARENTHESIS,
+                "expected a left parenthesis after functional symbol");
         List<Term> arguments = new ArrayList<>();
         while (tokenIterator.hasNext()) {
             arguments.add(parseTerm());
@@ -42,10 +45,8 @@ final class TermParser {
             if (tokenType == Token.Type.RIGHT_PARENTHESIS) {
                 return arguments;
             }
-            if (tokenType != Token.Type.COMMA) {
-                throw new IllegalArgumentException(
-                        "expected a comma or right parenthesis after an argument");
-            }
+            Assertions.check(tokenType == Token.Type.COMMA,
+                    "expected a comma or right parenthesis after an argument");
         }
         throw new IllegalArgumentException("Unexpected EOF while reading arguments");
     }
@@ -55,13 +56,17 @@ final class TermParser {
      *
      * @return a root of the syntax tree
      */
+    @NotNull
     public Term parseTerm() {
         if (!tokenIterator.hasNext()) {
             throw new IllegalArgumentException("Unexpected EOF while reading tokens");
         }
         Term term = Term.fromToken(tokenIterator.next());
         if (term instanceof FunctionalSymbolTerm functionalSymbolTermNode) {
-            functionalSymbolTermNode.addChildren(parseArguments());
+            List<Term> arguments = parseArguments();
+            for (Term argument : arguments) {
+                functionalSymbolTermNode.addChild(argument);
+            }
         }
         return term;
     }

@@ -2,6 +2,8 @@ package syntax;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -17,17 +19,45 @@ public final class ConstantTerm extends Term {
     }
 
     @Override
-    public Term deepCopy() {
-        return new ConstantTerm(this.getName());
+    protected @NotNull StringBuilder constructTermString(@NotNull StringBuilder sb) {
+        return sb.append(getName());
     }
 
     @Override
-    public Set<String> getDomain() {
+    protected @NotNull Term deepCopy(@NotNull Map<Term, Term> isomorphism) {
+        Term copy = isomorphism.get(this);
+        if (copy == null) {
+            copy = new ConstantTerm(getName());
+            isomorphism.put(this, copy);
+            for (Term parent : getParents()) {
+                copy.addParent(parent.deepCopy(isomorphism));
+            }
+        }
+        return copy;
+    }
+
+    @Override
+    public @NotNull Set<String> getDomain() {
         return Set.of();
     }
 
     @Override
     public boolean isLeafNode() {
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof ConstantTerm constantTerm) {
+            return Objects.equals(this.getName(), constantTerm.getName());
+        }
+        return false;
     }
 }

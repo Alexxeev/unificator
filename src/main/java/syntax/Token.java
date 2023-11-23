@@ -1,5 +1,7 @@
 package syntax;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * A record class to store token data.
  *
@@ -15,6 +17,7 @@ record Token(
     /**
      * Returns a string representation of the token.
      */
+    @NotNull
     @Override
     public String toString() {
         return String.format("%c%s", tokenType.relatedCharacter, optionalIndex);
