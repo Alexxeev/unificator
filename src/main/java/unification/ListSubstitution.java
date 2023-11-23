@@ -22,6 +22,7 @@ record ListSubstitution(
         Map<String, Term> domain
 ) implements Substitution {
 
+    @NotNull
     @Override
     public Term instantiateVariables(@NotNull final Term term) {
         Objects.requireNonNull(term);
@@ -29,8 +30,9 @@ record ListSubstitution(
         return instantiateVariablesInPlace(termCopy);
     }
 
+    @NotNull
     @Override
-    public Term instantiateVariablesInPlace(Term term) {
+    public Term instantiateVariablesInPlace(@NotNull final Term term) {
         if (term instanceof VariableTerm) {
             if (domain.containsKey(term.getName())) {
                 return domain.get(term.getName());
@@ -47,6 +49,7 @@ record ListSubstitution(
         return term;
     }
 
+    @NotNull
     @Override
     public Substitution composition(@NotNull final Substitution other) {
         Objects.requireNonNull(other);
@@ -69,8 +72,11 @@ record ListSubstitution(
         return new ListSubstitution(newDomain);
     }
 
+    @NotNull
     @Override
-    public Substitution composition(final @NotNull String variable, final @NotNull Term replacementTerm) {
+    public Substitution composition(
+            final @NotNull String variable,
+            final @NotNull Term replacementTerm) {
         Objects.requireNonNull(variable);
         Objects.requireNonNull(replacementTerm);
 

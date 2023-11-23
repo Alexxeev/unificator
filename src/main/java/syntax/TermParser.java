@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class provides methods to create syntax tree of first-order term.
- * This class uses recursive descent algorithm to construct syntax tree.
+ * This class provides methods to create syntax
+ * tree of the provided first-order term.
+ * This class uses recursive descent algorithm
+ * to construct syntax tree.
  */
 final class TermParser {
     /**
@@ -24,6 +26,7 @@ final class TermParser {
     /**
      * A token iterator
      */
+    @NotNull
     private final TokenIterator tokenIterator;
 
     /**
@@ -31,6 +34,7 @@ final class TermParser {
      *
      * @return list of term nodes
      */
+    @NotNull
     private List<Term> parseArguments() {
         Assertions.check(tokenIterator.next().tokenType() == Token.Type.LEFT_PARENTHESIS,
                 "expected a left parenthesis after functional symbol");
@@ -52,6 +56,7 @@ final class TermParser {
      *
      * @return a root of the syntax tree
      */
+    @NotNull
     public Term parseTerm() {
         if (!tokenIterator.hasNext()) {
             throw new IllegalArgumentException("Unexpected EOF while reading tokens");

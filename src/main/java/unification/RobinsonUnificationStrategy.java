@@ -18,8 +18,8 @@ class RobinsonUnificationStrategy implements UnificationStrategy {
 
     }
     @Override
-    public UnificationResult findUnifier(
-            @NotNull Term term1, @NotNull Term term2) {
+    public @NotNull UnificationResult findUnifier(
+            @NotNull final Term term1, @NotNull final Term term2) {
         Objects.requireNonNull(term1);
         Objects.requireNonNull(term2);
         Substitution substitution = Substitution.identity();

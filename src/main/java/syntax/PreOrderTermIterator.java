@@ -15,7 +15,7 @@ import java.util.Stack;
  * This class uses pre-order depth-first traversal method to
  * iterate over nodes of the syntax tree
  */
-public final class TermIterator implements Iterator<Term> {
+final class PreOrderTermIterator implements Iterator<Term> {
     /**
      * Contains nodes to be traversed
      */
@@ -35,7 +35,7 @@ public final class TermIterator implements Iterator<Term> {
      *
      * @param root root node of the syntax tree
      */
-    public TermIterator(
+    public PreOrderTermIterator(
             final @NotNull Term root) {
         currentTerm = Objects.requireNonNull(root);
     }

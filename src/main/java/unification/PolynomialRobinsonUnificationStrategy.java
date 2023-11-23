@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class PolynomialRobinsonUnificationStrategy implements UnificationStrategy {
     @Override
-    public UnificationResult findUnifier(
+    public @NotNull UnificationResult findUnifier(
             @NotNull final Term term1, @NotNull final Term term2) {
         Term termCopy1 = term1.deepCopy();
         Term termCopy2 = term2.deepCopy();

@@ -5,7 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,7 +30,7 @@ public final class FunctionalSymbolTerm extends Term {
     }
 
     @Override
-    protected StringBuilder constructTermString(StringBuilder sb) {
+    protected @NotNull StringBuilder constructTermString(@NotNull StringBuilder sb) {
         sb.append(getName());
         sb.append("(");
         int childrenCount = children.size();
@@ -46,7 +45,7 @@ public final class FunctionalSymbolTerm extends Term {
     }
 
     @Override
-    protected Term deepCopy(Map<Term, Term> isomorphism) {
+    protected @NotNull Term deepCopy(@NotNull Map<Term, Term> isomorphism) {
         Term copy = isomorphism.get(this);
         if (copy == null) {
             copy = new FunctionalSymbolTerm(
@@ -63,7 +62,7 @@ public final class FunctionalSymbolTerm extends Term {
     }
 
     @Override
-    public Set<String> getDomain() {
+    public @NotNull Set<String> getDomain() {
         Set<String> domain = new HashSet<>();
         for (Term term : this) {
             if (term instanceof VariableTerm) {
@@ -79,7 +78,7 @@ public final class FunctionalSymbolTerm extends Term {
     }
 
     @Override
-    public List<Term> getChildren() {
+    public @NotNull List<Term> getChildren() {
         return Collections.unmodifiableList(children);
     }
 

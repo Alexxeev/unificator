@@ -26,6 +26,7 @@ public abstract class Term implements Iterable<Term> {
      * @throws IllegalArgumentException if {@code token} is
      * an instance of punctuation token
      */
+    @NotNull
     static Term fromToken(@NotNull final Token token) {
         Objects.requireNonNull(token);
         switch (token.tokenType()) {
@@ -59,6 +60,7 @@ public abstract class Term implements Iterable<Term> {
      * @throws IllegalArgumentException if term is of invalid form
      * @throws NullPointerException if {@code termString} is {@code null}
      */
+    @NotNull
     public static Term fromString(@NotNull final String termString) {
         TokenIterator iterator = new TokenIterator(new StringCharacterIterator(
                 Objects.requireNonNull(termString)
@@ -66,6 +68,26 @@ public abstract class Term implements Iterable<Term> {
         return new TermParser(iterator).parseTerm();
     }
 
+    /**
+     * Creates a directed acyclic graph representation
+     * of first-order term from string input.
+     * This representation stores each unique subterm exactly once.
+     * <p>
+     * Valid terms may have one of the following forms:<br>
+     * c&lt;<i>index</i>&gt; - constant<br>
+     * x&lt;<i>index</i>&gt; - variable<br>
+     * f&lt;<i>index</i>&gt;<i>(</i>
+     * &lt;<i>term</i>&gt;<i>,</i>&lt;<i>term</i>&gt;<i>...</i>&lt;<i>term</i>&gt;
+     * <i>)</i> - term with functional symbol of arity &gt; 0
+     * <p>
+     * Parser uses recursive descent algorithm to process tokens.
+     *
+     * @param termString sequence of tokens representing first-order term
+     * @return syntax tree of provided first-order term
+     * @throws IllegalArgumentException if term is of invalid form
+     * @throws NullPointerException if {@code termString} is {@code null}
+     */
+    @NotNull
     public static Term dagFromString(@NotNull final String termString) {
         TokenIterator iterator = new TokenIterator(new StringCharacterIterator(
                 Objects.requireNonNull(termString)
@@ -76,11 +98,13 @@ public abstract class Term implements Iterable<Term> {
     /**
      * Name of this node
      */
+    @NotNull
     private final String name;
 
     /**
      * Parent nodes
      */
+    @NotNull
     private final List<Term> parents = new ArrayList<>();
 
     /**
@@ -91,18 +115,40 @@ public abstract class Term implements Iterable<Term> {
         this.name = Objects.requireNonNull(name);
     }
 
+    /**
+     * Inserts the specified term node as a parent node
+     * in the end of the parent node list.
+     *
+     * @param parent node to be inserted.
+     */
     public void addParent(@NotNull final Term parent) {
         parents.add(Objects.requireNonNull(parent));
     }
 
+    /**
+     * Inserts the specified list of term nodes
+     * as parent nodes in the end of the parent node list.
+     *
+     * @param newParents node to be inserted.
+     */
     public void addParents(@NotNull final List<Term> newParents) {
         parents.addAll(Objects.requireNonNull(newParents));
     }
 
+    /**
+     * Isolates this term by removing all its parent nodes
+     */
     public void removeParents() {
         parents.clear();
     }
 
+    /**
+     * Returns a list that contains parent nodes of this node.
+     * Note that returned list is immutable.
+     *
+     * @return immutable list of children term nodes
+     */
+    @NotNull
     public List<Term> getParents() {
         return Collections.unmodifiableList(parents);
     }
@@ -112,6 +158,7 @@ public abstract class Term implements Iterable<Term> {
      * in the end of the child node list.
      *
      * @param term node to be inserted.
+     * @throws UnsupportedOperationException if this term is leaf one
      */
     public void addChild(final @NotNull Term term) {
         throw new UnsupportedOperationException();
@@ -122,7 +169,9 @@ public abstract class Term implements Iterable<Term> {
      * Note that returned list is immutable.
      *
      * @return immutable list of children term nodes
+     * @throws UnsupportedOperationException if this term is leaf one
      */
+    @NotNull
     public List<Term> getChildren() {
         throw new UnsupportedOperationException();
     }
@@ -135,11 +184,20 @@ public abstract class Term implements Iterable<Term> {
      * @param term child node to be stored at the specified position
      * @throws IndexOutOfBoundsException if the index is out of range
      *         ({@code index < 0 || index > size()})
+     * @throws UnsupportedOperationException if this term is leaf one
      */
     public void setChild(final int index, final @NotNull Term term) {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Replaces all the occurrences of the specified subterm with
+     * other specified subterm
+     *
+     * @param from subterm to be replaced
+     * @param to replacement subterm
+     * @throws UnsupportedOperationException if this term is leaf one
+     */
     public void replaceChild(@NotNull final Term from, @NotNull final Term to) {
         throw new UnsupportedOperationException();
     }
@@ -151,25 +209,38 @@ public abstract class Term implements Iterable<Term> {
      * @return a {@code StringBuilder} instance that contains
      *          a string representation of the syntax tree
      */
-    protected abstract StringBuilder constructTermString(StringBuilder sb);
+    @NotNull
+    protected abstract StringBuilder constructTermString(@NotNull final StringBuilder sb);
 
     /**
-     * Returns a deep copy of the tree.
+     * Returns a deep copy of this term.
      *
-     * @return deep copy of the tree.
+     * @return deep copy of this term.
      */
+    @NotNull
     public Term deepCopy() {
         final Map<Term, Term> isomorphism = new IdentityHashMap<>();
         return deepCopy(isomorphism);
     }
 
-    protected abstract Term deepCopy(Map<Term, Term> isomorphism);
+    /**
+     * Internal method to build deep copy of this term.
+     *
+     * @return deep copy of this term.
+     */
+    @NotNull
+    protected abstract Term deepCopy(@NotNull final Map<Term, Term> isomorphism);
 
-    public boolean contains(final @NotNull Term other) {
+    /**
+     * Returns true if the specified term is subterm of this term
+     *
+     * @param other term to be checked
+     * @return true if the specified term is subterm of this term
+     */
+    public boolean contains(@NotNull final Term other) {
         Objects.requireNonNull(other);
-        TermIterator iterator = new TermIterator(this);
-        while (iterator.hasNext()) {
-            if (iterator.next() == other)
+        for (Term term : this) {
+            if (term == other)
                 return true;
         }
         return false;
@@ -183,15 +254,17 @@ public abstract class Term implements Iterable<Term> {
      *
      * @return immutable set of variables
      */
+    @NotNull
     public abstract Set<String> getDomain();
 
     /**
      * Returns the name of this term node. Name has the following format:
      * <br>
-     * &lt;prefixCharacter&gt;&lt;indexDigits&gt;
+     * &lt;prefixCharacter&gt;&lt;index&gt;
      *
      * @return string representation of node name
      */
+    @NotNull
     public String getName() {
         return name;
     }
@@ -219,6 +292,7 @@ public abstract class Term implements Iterable<Term> {
      * @return a string representation of the syntax tree
      *      rooted at this node
      */
+    @NotNull
     @Override
     public String toString() {
         return constructTermString(
@@ -228,6 +302,6 @@ public abstract class Term implements Iterable<Term> {
     @NotNull
     @Override
     public Iterator<Term> iterator() {
-        return new TermIterator(this);
+        return new PreOrderTermIterator(this);
     }
 }

@@ -7,6 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * This class provides methods to create
+ * directed acyclic graph representation
+ * of the provided first-order term.
+ * This class uses recursive descent algorithm
+ * to construct syntax tree.
+ */
 final class TermDagParser {
     /**
      * Creates a new parser with provided {@code TokenIterator} instance.
@@ -20,10 +27,21 @@ final class TermDagParser {
     /**
      * A token iterator
      */
+    @NotNull
     private final TokenIterator tokenIterator;
 
+    /**
+     * A set of all subterms occurred in the term.
+     */
+    @NotNull
     private final Map<Term, Term> uniqueTerms = new HashMap<>();
 
+    /**
+     * Constructs a term.
+     *
+     * @return a root of the syntax tree
+     */
+    @NotNull
     public Term parseTerm() {
         Assertions.check(tokenIterator.hasNext(),
                 "Unexpected EOF while reading tokens");
@@ -38,7 +56,10 @@ final class TermDagParser {
         return term;
     }
 
-    private void parseArguments(Term term) {
+    /**
+     * Constructs a list of the arguments of the functional symbol term.
+     */
+    private void parseArguments(@NotNull final Term term) {
         Assertions.check(tokenIterator.next().tokenType() == Token.Type.LEFT_PARENTHESIS,
                 "expected a left parenthesis after functional symbol");
         while (tokenIterator.hasNext()) {

@@ -19,12 +19,12 @@ public final class ConstantTerm extends Term {
     }
 
     @Override
-    protected StringBuilder constructTermString(StringBuilder sb) {
+    protected @NotNull StringBuilder constructTermString(@NotNull StringBuilder sb) {
         return sb.append(getName());
     }
 
     @Override
-    protected Term deepCopy(Map<Term, Term> isomorphism) {
+    protected @NotNull Term deepCopy(@NotNull Map<Term, Term> isomorphism) {
         Term copy = isomorphism.get(this);
         if (copy == null) {
             copy = new ConstantTerm(getName());
@@ -37,7 +37,7 @@ public final class ConstantTerm extends Term {
     }
 
     @Override
-    public Set<String> getDomain() {
+    public @NotNull Set<String> getDomain() {
         return Set.of();
     }
 
