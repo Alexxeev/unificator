@@ -5,10 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -49,7 +47,7 @@ public final class FunctionalSymbolTerm extends Term {
 
     @Override
     protected Term deepCopy(Map<Term, Term> isomorphism) {
-        FunctionalSymbolTerm copy = (FunctionalSymbolTerm) isomorphism.get(this);
+        Term copy = isomorphism.get(this);
         if (copy == null) {
             copy = new FunctionalSymbolTerm(
                     this.getName());
@@ -79,63 +77,22 @@ public final class FunctionalSymbolTerm extends Term {
         return domain;
     }
 
-    /**
-     * Inserts the specified term node as a child node
-     * in the end of the child node list.
-     *
-     * @param term node to be inserted.
-     */
+    @Override
     public void addChild(final @NotNull Term term) {
         children.add(term);
     }
 
-    /**
-     * Adds a list of terms to the children list of this node
-     * to the end of the children list.
-     *
-     * @param nodes list of nodes
-     */
-    public void addChildren(@NotNull List<Term> nodes) {
-        children.addAll(Objects.requireNonNull(nodes));
-    }
-
-    /**
-     * Returns a list that contains children nodes of this node.
-     * Note that returned list is immutable.
-     *
-     * @return immutable list of children term nodes
-     */
+    @Override
     public List<Term> getChildren() {
         return Collections.unmodifiableList(children);
     }
 
-    public Term getChild(final int index) {
-        return children.get(index);
-    }
-
-    /**
-     * Inserts the specified term node as a child node
-     * in the beginning of the child node list.
-     *
-     * @param term node to be inserted.
-     */
-    public void prependChild(final @NotNull Term term) {
-        children.add(0, Objects.requireNonNull(term));
-    }
-
-    /**
-     * Replaces the element at the specified position in the child node list
-     * with the specified element.
-     *
-     * @param index index of child node to replace
-     * @param term child node to be stored at the specified position
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *         ({@code index < 0 || index > size()})
-     */
+    @Override
     public void setChild(final int index, final @NotNull Term term) {
         children.set(index, Objects.requireNonNull(term));
     }
 
+    @Override
     public void replaceChild(@NotNull final Term from, @NotNull final Term to) {
         Collections.replaceAll(children, from, to);
     }

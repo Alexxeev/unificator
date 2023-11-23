@@ -7,11 +7,13 @@ import syntax.Term;
 import syntax.VariableTerm;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PolynomialRobinsonUnificationStrategy implements UnificationStrategy {
     @Override
-    public UnificationResult findUnifier(@NotNull Term term1, @NotNull Term term2) {
+    public UnificationResult findUnifier(
+            @NotNull final Term term1, @NotNull final Term term2) {
         Term termCopy1 = term1.deepCopy();
         Term termCopy2 = term2.deepCopy();
         Map<String, Term> bindingList = new HashMap<>();
@@ -23,26 +25,28 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
         return UnificationResult.unifiable(Substitution.of(bindingList));
     }
 
-    private void findUnifierRecursive(Term term1, Term term2, Map<String, Term> bindingList) {
+    private void findUnifierRecursive(
+            Term term1, Term term2, Map<String, Term> bindingList) {
         if (term1.equals(term2)) {
             //Do nothing
-        } else if (term1 instanceof FunctionalSymbolTerm functionalSymbolTerm1
-                && term2 instanceof FunctionalSymbolTerm functionalSymbolTerm2) {
+        } else if (term1 instanceof FunctionalSymbolTerm
+                && term2 instanceof FunctionalSymbolTerm) {
             if (!term1.getName().equals(term2.getName())) {
                 throw new IllegalStateException("Symbol clash");
             }
-            int size1 = functionalSymbolTerm1.getChildren().size();
-            int size2 = functionalSymbolTerm2.getChildren().size();
-            if (size1 != size2) {
+            List<Term> children1 = term1.getChildren();
+            List<Term> children2 = term2.getChildren();
+            if (children1.size() != children2.size()) {
                 throw new IllegalStateException("Symbol clash");
             }
-            for (int i = 0; i < size1; i++) {
+            for (int i = 0; i < children1.size(); i++) {
                 findUnifierRecursive(
-                        functionalSymbolTerm1.getChild(i),
-                        functionalSymbolTerm2.getChild(i),
+                        children1.get(i),
+                        children2.get(i),
                         bindingList);
             }
-        } else if (term1 instanceof ConstantTerm && term2 instanceof ConstantTerm) {
+        } else if (term1 instanceof ConstantTerm
+                && term2 instanceof ConstantTerm) {
             if (!term1.getName().equals(term2.getName())) {
                 throw new IllegalStateException("Symbol clash");
             }
@@ -58,7 +62,7 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
 
     private void replace(Term term, Term replacement) {
         for (Term parent : term.getParents()) {
-            ((FunctionalSymbolTerm)parent).replaceChild(term, replacement);
+            parent.replaceChild(term, replacement);
         }
         replacement.addParents(term.getParents());
         term.removeParents();

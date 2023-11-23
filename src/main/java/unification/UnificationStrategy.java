@@ -10,7 +10,8 @@ import syntax.Term;
  */
 public interface UnificationStrategy {
     UnificationStrategy ROBINSON = new RobinsonUnificationStrategy();
-    UnificationStrategy ROBINSON_POLYNOMIAL = new PolynomialRobinsonUnificationStrategy();
+    UnificationStrategy ROBINSON_POLYNOMIAL
+            = new PolynomialRobinsonUnificationStrategy();
 
     /**
      * Finds a unifier of set of two terms.
@@ -19,5 +20,6 @@ public interface UnificationStrategy {
      * @param term2 second term
      * @return Result of unification of two terms.
      */
-    UnificationResult findUnifier(@NotNull final Term term1, @NotNull final Term term2);
+    UnificationResult findUnifier(
+            @NotNull final Term term1, @NotNull final Term term2);
 }

@@ -36,8 +36,7 @@ class TermParserTest {
         assertEquals(termString, actualTerm.toString());
         assertEquals(0, actualTerm.getParents().size());
         assertInstanceOf(FunctionalSymbolTerm.class, actualTerm);
-        FunctionalSymbolTerm functionalSymbolTerm = (FunctionalSymbolTerm) actualTerm;
-        List<Term> children = functionalSymbolTerm.getChildren();
+        List<Term> children = actualTerm.getChildren();
         assertEquals(2, children.size());
         Term child1 = children.get(0);
         Term child2 = children.get(1);

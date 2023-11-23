@@ -16,12 +16,11 @@ class TermTest {
         Term term = Term.fromToken(
                 new Token(Token.Type.FUNCTIONAL_SYMBOL,  "1")
         );
-        FunctionalSymbolTerm functionalSymbolTermNode = (FunctionalSymbolTerm) term;
-        functionalSymbolTermNode.prependChild(Term.fromToken(
-                new Token(Token.Type.CONSTANT,  "1")
-        ));
-        functionalSymbolTermNode.prependChild(Term.fromToken(
+        term.addChild(Term.fromToken(
                 new Token(Token.Type.VARIABLE,  "1")
+        ));
+        term.addChild(Term.fromToken(
+                new Token(Token.Type.CONSTANT,  "1")
         ));
 
         assertEquals(termString, term.toString());
@@ -33,18 +32,16 @@ class TermTest {
         Term innerTerm = Term.fromToken(
                 new Token(Token.Type.FUNCTIONAL_SYMBOL,  "2")
         );
-        FunctionalSymbolTerm functionalSymbolInnerTermNode = (FunctionalSymbolTerm) innerTerm;
-        functionalSymbolInnerTermNode.prependChild(Term.fromToken(
+        innerTerm.addChild(Term.fromToken(
                 new Token(Token.Type.CONSTANT,  "1")
         ));
         Term term = Term.fromToken(
                 new Token(Token.Type.FUNCTIONAL_SYMBOL,  "1")
         );
-        FunctionalSymbolTerm functionalSymbolTermNode = (FunctionalSymbolTerm) term;
-        functionalSymbolTermNode.prependChild(innerTerm);
-        functionalSymbolTermNode.prependChild(Term.fromToken(
+        term.addChild(Term.fromToken(
                 new Token(Token.Type.VARIABLE,  "1")
         ));
+        term.addChild(innerTerm);
 
         assertEquals(termString, term.toString());
     }
@@ -77,7 +74,7 @@ class TermTest {
         Term copyTerm = originalTerm.deepCopy();
 
         assertInstanceOf(FunctionalSymbolTerm.class, copyTerm);
-        List<Term> children = ((FunctionalSymbolTerm)copyTerm).getChildren();
+        List<Term> children = copyTerm.getChildren();
         assertEquals(2, children.size());
         Term child1 = children.get(0);
         Term child2 = children.get(1);
@@ -88,15 +85,14 @@ class TermTest {
     @Test
     public void toString_SubtermModified_ShouldModifyParentTerm() {
         Term subterm = Term.fromString("f1(c,x)");
-        Term term = Term.fromToken(new Token(Token.Type.FUNCTIONAL_SYMBOL, ""));
-        FunctionalSymbolTerm functionalSymbolTerm = (FunctionalSymbolTerm) term;
-        functionalSymbolTerm.addChild(subterm);
-        functionalSymbolTerm.addChild(subterm);
+        Term term = Term.fromToken(
+                new Token(Token.Type.FUNCTIONAL_SYMBOL, ""));
+        term.addChild(subterm);
+        term.addChild(subterm);
 
-        FunctionalSymbolTerm functionalSymbolSubterm = (FunctionalSymbolTerm) subterm;
-        functionalSymbolSubterm.setChild(1, Term.fromString("c1"));
+        subterm.setChild(1, Term.fromString("c1"));
 
-        assertEquals("f(f1(c,c1),f1(c,c1))", functionalSymbolTerm.toString());
+        assertEquals("f(f1(c,c1),f1(c,c1))", term.toString());
     }
 
     @ParameterizedTest

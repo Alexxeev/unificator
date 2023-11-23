@@ -58,7 +58,10 @@ final class TermParser {
         }
         Term term = Term.fromToken(tokenIterator.next());
         if (term instanceof FunctionalSymbolTerm functionalSymbolTermNode) {
-            functionalSymbolTermNode.addChildren(parseArguments());
+            List<Term> arguments = parseArguments();
+            for (Term argument : arguments) {
+                functionalSymbolTermNode.addChild(argument);
+            }
         }
         return term;
     }

@@ -98,15 +98,4 @@ class SubstitutionTest {
         assertEquals("f1(c2)", actualDomain.get("x1").toString());
         assertEquals("x2", actualDomain.get("x3").toString());
     }
-
-//    @Test
-//    public void testSubstitution() {
-//        Substitution substitution = Substitution.of(Map.of(
-//                "x3", TermNode.fromString("f2(c1)"),
-//                "x1", TermNode.fromString("c1"))
-//        );
-//        Substitution actualSubstitution = substitution.composition(
-//
-//        )
-//    }
 }

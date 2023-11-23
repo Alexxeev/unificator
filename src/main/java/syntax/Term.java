@@ -107,6 +107,43 @@ public abstract class Term {
     }
 
     /**
+     * Inserts the specified term node as a child node
+     * in the end of the child node list.
+     *
+     * @param term node to be inserted.
+     */
+    public void addChild(final @NotNull Term term) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Returns a list that contains children nodes of this node.
+     * Note that returned list is immutable.
+     *
+     * @return immutable list of children term nodes
+     */
+    public List<Term> getChildren() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Replaces the element at the specified position in the child node list
+     * with the specified element.
+     *
+     * @param index index of child node to replace
+     * @param term child node to be stored at the specified position
+     * @throws IndexOutOfBoundsException if the index is out of range
+     *         ({@code index < 0 || index > size()})
+     */
+    public void setChild(final int index, final @NotNull Term term) {
+        throw new UnsupportedOperationException();
+    }
+
+    public void replaceChild(@NotNull final Term from, @NotNull final Term to) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
      * Recursively builds string representation of syntax tree
      * rooted at the provided node
      * @param sb a string builder

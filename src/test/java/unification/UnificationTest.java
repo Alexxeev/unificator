@@ -23,7 +23,6 @@ class UnificationTest {
         assertTrue(unificationResult.isUnifiable());
         Substitution unifier = unificationResult.unifier();
         assertFalse(unifier.domain().isEmpty());
-        System.out.println(unifier.domain());
         assertEquals(unifier.instantiateVariables(term1).toString(), unifier.instantiateVariables(term2).toString());
     }
 
@@ -43,7 +42,6 @@ class UnificationTest {
         assertTrue(unificationResult.isUnifiable());
         Substitution unifier = unificationResult.unifier();
         assertFalse(unifier.domain().isEmpty());
-        System.out.println(unifier.domain());
         assertEquals(unifier.instantiateVariables(term1).toString(), unifier.instantiateVariables(term2).toString());
     }
 }

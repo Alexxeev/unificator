@@ -28,8 +28,8 @@ final class TermDagParser {
         Assertions.check(tokenIterator.hasNext(),
                 "Unexpected EOF while reading tokens");
         Term term = Term.fromToken(tokenIterator.next());
-        if (term instanceof FunctionalSymbolTerm functionalSymbolTerm) {
-            parseArguments(functionalSymbolTerm);
+        if (term instanceof FunctionalSymbolTerm) {
+            parseArguments(term);
         }
         if (uniqueTerms.containsKey(term)) {
             return uniqueTerms.get(term);
@@ -38,7 +38,7 @@ final class TermDagParser {
         return term;
     }
 
-    private void parseArguments(FunctionalSymbolTerm term) {
+    private void parseArguments(Term term) {
         Assertions.check(tokenIterator.next().tokenType() == Token.Type.LEFT_PARENTHESIS,
                 "expected a left parenthesis after functional symbol");
         while (tokenIterator.hasNext()) {

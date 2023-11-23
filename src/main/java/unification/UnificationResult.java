@@ -25,7 +25,8 @@ public record UnificationResult(
      *         successful unification process
      */
     public static UnificationResult unifiable(@NotNull Substitution unifier) {
-        return new UnificationResult(true, Objects.requireNonNull(unifier));
+        return new UnificationResult(
+                true, Objects.requireNonNull(unifier));
     }
 
     /**

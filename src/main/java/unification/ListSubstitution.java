@@ -36,10 +36,10 @@ record ListSubstitution(
                 return domain.get(term.getName());
             }
         }
-        if (term instanceof FunctionalSymbolTerm functionalSymbolTerm) {
-            List<Term> children = functionalSymbolTerm.getChildren();
+        if (term instanceof FunctionalSymbolTerm) {
+            List<Term> children = term.getChildren();
             for (int i = 0; i < children.size(); i++) {
-                functionalSymbolTerm.setChild(
+                term.setChild(
                         i,
                         instantiateVariablesInPlace(children.get(i)));
             }
