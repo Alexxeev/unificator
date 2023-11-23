@@ -109,6 +109,10 @@ public final class FunctionalSymbolTerm extends Term {
         return Collections.unmodifiableList(children);
     }
 
+    public Term getChild(final int index) {
+        return children.get(index);
+    }
+
     /**
      * Inserts the specified term node as a child node
      * in the beginning of the child node list.
@@ -130,6 +134,10 @@ public final class FunctionalSymbolTerm extends Term {
      */
     public void setChild(final int index, final @NotNull Term term) {
         children.set(index, Objects.requireNonNull(term));
+    }
+
+    public void replaceChild(@NotNull final Term from, @NotNull final Term to) {
+        Collections.replaceAll(children, from, to);
     }
 
     @Override

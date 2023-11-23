@@ -65,6 +65,13 @@ public abstract class Term {
         return new TermParser(iterator).parseTerm();
     }
 
+    public static Term dagFromString(@NotNull final String termString) {
+        TokenIterator iterator = new TokenIterator(new StringCharacterIterator(
+                Objects.requireNonNull(termString)
+        ));
+        return new TermDagParser(iterator).parseTerm();
+    }
+
     /**
      * Name of this node
      */
@@ -85,6 +92,14 @@ public abstract class Term {
 
     public void addParent(@NotNull final Term parent) {
         parents.add(Objects.requireNonNull(parent));
+    }
+
+    public void addParents(@NotNull final List<Term> newParents) {
+        parents.addAll(Objects.requireNonNull(newParents));
+    }
+
+    public void removeParents() {
+        parents.clear();
     }
 
     public List<Term> getParents() {
@@ -111,6 +126,16 @@ public abstract class Term {
     }
 
     protected abstract Term deepCopy(Map<Term, Term> isomorphism);
+
+    public boolean contains(final @NotNull Term other) {
+        Objects.requireNonNull(other);
+        TermIterator iterator = new TermIterator(this);
+        while (iterator.hasNext()) {
+            if (iterator.next() == other)
+                return true;
+        }
+        return false;
+    }
 
     /**
      * Returns a set of variables that are present in this term.
