@@ -6,6 +6,8 @@ import syntax.FunctionalSymbolTerm;
 import syntax.Term;
 import syntax.VariableTerm;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
@@ -23,7 +25,7 @@ class RobinsonUnificationStrategy implements UnificationStrategy {
         Objects.requireNonNull(term1);
         Objects.requireNonNull(term2);
         Substitution substitution = Substitution.identity();
-        Stack<Term> termStack = new Stack<>();
+        Deque<Term> termStack = new ArrayDeque<>();
         termStack.push(term1);
         termStack.push(term2);
         while (!termStack.isEmpty()) {
