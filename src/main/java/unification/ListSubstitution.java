@@ -33,10 +33,9 @@ record ListSubstitution(
     @NotNull
     @Override
     public Term instantiateVariablesInPlace(@NotNull final Term term) {
-        if (term instanceof VariableTerm) {
-            if (domain.containsKey(term.getName())) {
-                return domain.get(term.getName());
-            }
+        if (term instanceof VariableTerm
+                && domain.containsKey(term.getName())) {
+            return domain.get(term.getName());
         }
         if (term instanceof FunctionalSymbolTerm) {
             List<Term> children = term.getChildren();
