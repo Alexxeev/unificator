@@ -57,7 +57,7 @@ class TermTest {
     public void deepCopy_ValidTerm_ShouldBeEqual(final String termString) {
         Term originalTerm = Term.fromString(termString);
 
-        Term copyTerm = originalTerm.deepCopy();
+        Term copyTerm = Term.copyOf(originalTerm);
 
         assertEquals(originalTerm, copyTerm);
         assertNotSame(originalTerm, copyTerm);
@@ -71,7 +71,7 @@ class TermTest {
                 )
         ).parseTerm();
 
-        Term copyTerm = originalTerm.deepCopy();
+        Term copyTerm = Term.copyOf(originalTerm);
 
         assertInstanceOf(FunctionalSymbolTerm.class, copyTerm);
         List<Term> children = copyTerm.getChildren();

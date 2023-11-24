@@ -26,7 +26,7 @@ record ListSubstitution(
     @Override
     public Term instantiateVariables(@NotNull final Term term) {
         Objects.requireNonNull(term);
-        Term termCopy = term.deepCopy();
+        Term termCopy = Term.copyOf(term);
         return instantiateVariablesInPlace(termCopy);
     }
 

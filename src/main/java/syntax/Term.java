@@ -96,6 +96,18 @@ public abstract class Term implements Iterable<Term> {
     }
 
     /**
+     * Constructs a deep copy of the provided term.
+     *
+     * @return deep copy of this term.
+     */
+    @NotNull
+    public static Term copyOf(@NotNull final Term term) {
+        Objects.requireNonNull(term);
+        final Map<Term, Term> isomorphism = new IdentityHashMap<>();
+        return term.deepCopy(isomorphism);
+    }
+
+    /**
      * Name of this node
      */
     @NotNull
@@ -211,17 +223,6 @@ public abstract class Term implements Iterable<Term> {
      */
     @NotNull
     protected abstract StringBuilder constructTermString(@NotNull final StringBuilder sb);
-
-    /**
-     * Returns a deep copy of this term.
-     *
-     * @return deep copy of this term.
-     */
-    @NotNull
-    public Term deepCopy() {
-        final Map<Term, Term> isomorphism = new IdentityHashMap<>();
-        return deepCopy(isomorphism);
-    }
 
     /**
      * Internal method to build deep copy of this term.

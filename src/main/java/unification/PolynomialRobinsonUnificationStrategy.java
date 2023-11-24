@@ -14,8 +14,8 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
     @Override
     public @NotNull UnificationResult findUnifier(
             @NotNull final Term term1, @NotNull final Term term2) {
-        Term termCopy1 = term1.deepCopy();
-        Term termCopy2 = term2.deepCopy();
+        Term termCopy1 = Term.copyOf(term1);
+        Term termCopy2 = Term.copyOf(term2);
         Map<String, Term> bindingList = new HashMap<>();
         try {
             findUnifierRecursive(termCopy1, termCopy2, bindingList);
