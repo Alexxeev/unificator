@@ -47,19 +47,20 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
         Iterator<Term> iterator1 = term1.iterator();
         Iterator<Term> iterator2 = term2.iterator();
         while (iterator1.hasNext() || iterator2.hasNext()) {
-            if (iterator1.hasNext()) {
-                Term currentTerm1 = iterator1.next();
-                if (instancePredicate.test(currentTerm1)) {
-                    finish(currentTerm1);
-                }
-            }
-            if (iterator2.hasNext()) {
-                Term currentTerm2 = iterator2.next();
-                if (instancePredicate.test(currentTerm2)) {
-                    finish(currentTerm2);
-                }
-            }
+            processIterator(iterator1, instancePredicate);
+            processIterator(iterator2, instancePredicate);
         }
+    }
+
+    private void processIterator(Iterator<Term> iterator, Predicate<Term> instancePredicate) {
+        if (!iterator.hasNext()) {
+            return;
+        }
+        Term currentTerm = iterator.next();
+        if (!instancePredicate.test(currentTerm)) {
+            return;
+        }
+        finish(currentTerm);
     }
 
     private void finish(Term term) {
