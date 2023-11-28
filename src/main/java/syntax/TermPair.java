@@ -26,10 +26,16 @@ public record TermPair(
 
     public static TermPair copyOf(@NotNull final TermPair pair) {
         Objects.requireNonNull(pair);
+        return of(pair.term1(), pair.term2());
+    }
+
+    public static TermPair of(@NotNull final Term term1, @NotNull final Term term2) {
+        Objects.requireNonNull(term1);
+        Objects.requireNonNull(term2);
         Map<Term, Term> isomorphism = new IdentityHashMap<>();
         return new TermPair(
-                pair.term1.deepCopy(isomorphism),
-                pair.term2.deepCopy(isomorphism)
+                term1.deepCopy(isomorphism),
+                term2.deepCopy(isomorphism)
         );
     }
 }
