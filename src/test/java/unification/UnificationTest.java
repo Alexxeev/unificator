@@ -45,4 +45,23 @@ class UnificationTest {
         assertFalse(unifier.domain().isEmpty());
         assertEquals(unifier.instantiateVariables(termPair.term1()).toString(), unifier.instantiateVariables(termPair.term2()).toString());
     }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "f(x,f1(c));f(f1(c),f1(x1))",
+            "f3(f2(x1),x1,f2(x2));f3(x3,c1,x3)",
+            "f3(f2(x1),x1,f1(f2(x2)));f3(x3,c1,f1(x3))"
+
+    }, delimiter = ';')
+    public void testPatersonWegmanUnification_termsAreUnifiable(String termString1, String termString2) {
+        TermPair termPair = TermPair.fromStrings(termString1, termString2);
+
+        UnificationResult unificationResult = new PatersonWegmanUnificationStrategy().findUnifier(termPair);
+
+        assertTrue(unificationResult.isUnifiable());
+        Substitution unifier = unificationResult.unifier();
+        assertFalse(unifier.domain().isEmpty());
+        System.out.println(unifier.domain());
+        assertEquals(unifier.instantiateVariables(termPair.term1()).toString(), unifier.instantiateVariables(termPair.term2()).toString());
+    }
 }

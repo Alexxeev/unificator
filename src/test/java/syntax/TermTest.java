@@ -135,4 +135,9 @@ class TermTest {
 
         assertNotEquals(null, term);
     }
+
+    @Test
+    public void ctor_nullArgs_shouldThrow() {
+        assertThrows(NullPointerException.class, () -> new TermPair(null, null));
+    }
 }
