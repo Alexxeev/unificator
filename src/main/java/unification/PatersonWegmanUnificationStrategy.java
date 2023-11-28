@@ -85,7 +85,7 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
             for (Term parent : term.getParents()) {
                 finish(parent);
             }
-            for (Term link : links.get(currentTerm)) {
+            for (Term link : links.getOrDefault(currentTerm, List.of())) {
                 if (finished.contains(link) || link.equals(term)) {
                     continue;
                 }
