@@ -36,7 +36,7 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
         finish(termPairCopy.term1(), termPairCopy.term2(), term -> term instanceof VariableTerm);
 
         if (isUnifiable) {
-            return UnificationResult.unifiable(Substitution.of(bindingList));
+            return UnificationResult.unifiable(Substitution.fromTriangularForm(bindingList));
         }
         return UnificationResult.notUnifiable();
     }
