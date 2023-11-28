@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import syntax.ConstantTerm;
 import syntax.FunctionalSymbolTerm;
 import syntax.Term;
+import syntax.TermPair;
 import syntax.VariableTerm;
 
 import java.util.ArrayDeque;
@@ -21,13 +22,13 @@ class RobinsonUnificationStrategy implements UnificationStrategy {
     }
     @Override
     public @NotNull UnificationResult findUnifier(
-            @NotNull final Term term1, @NotNull final Term term2) {
-        Objects.requireNonNull(term1);
-        Objects.requireNonNull(term2);
+            @NotNull final TermPair termPair) {
+        Objects.requireNonNull(termPair);
         Substitution substitution = Substitution.identity();
         Deque<Term> termStack = new ArrayDeque<>();
-        termStack.push(term1);
-        termStack.push(term2);
+        TermPair termPairCopy = TermPair.copyOf(termPair);
+        termStack.push(termPairCopy.term1());
+        termStack.push(termPairCopy.term2());
         while (!termStack.isEmpty()) {
             Term currentTerm2 = termStack.pop();
             Term currentTerm1 = termStack.pop();

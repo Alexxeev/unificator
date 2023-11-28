@@ -28,9 +28,6 @@ public final class VariableTerm extends Term {
         if (copy == null) {
             copy = new VariableTerm(getName());
             isomorphism.put(this, copy);
-            for (Term parent : getParents()) {
-                copy.addParent(parent.deepCopy(isomorphism));
-            }
         }
         return copy;
     }
