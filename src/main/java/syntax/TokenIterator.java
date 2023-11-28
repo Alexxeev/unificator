@@ -3,6 +3,7 @@ package syntax;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -71,6 +72,10 @@ final class TokenIterator implements Iterator<Token> {
      */
     public TokenIterator(final @NotNull CharacterIterator characterIterator) {
         this.characterIterator = Objects.requireNonNull(characterIterator);
+    }
+
+    public static TokenIterator of(@NotNull final String s) {
+        return new TokenIterator(new StringCharacterIterator(Objects.requireNonNull(s)));
     }
 
     /**

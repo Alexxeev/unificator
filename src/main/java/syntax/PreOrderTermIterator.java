@@ -2,12 +2,13 @@ package syntax;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Stack;
 
 /**
  * This class provides an ability to iterate over nodes
@@ -19,7 +20,7 @@ final class PreOrderTermIterator implements Iterator<Term> {
     /**
      * Contains nodes to be traversed
      */
-    private final Stack<Term> nodeStack = new Stack<>();
+    private final Deque<Term> nodeStack = new ArrayDeque<>();
     /**
      * A current term
      */

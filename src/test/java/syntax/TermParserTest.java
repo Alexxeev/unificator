@@ -26,22 +26,15 @@ class TermParserTest {
 
     @Test
     public void testTermDagParsing() {
-        String termString = "f(f1(c,x),f1(c,x))";
-        CharacterIterator characterIterator = new StringCharacterIterator(termString);
-        TokenIterator iterator = new TokenIterator(characterIterator);
-        TermDagParser parser = new TermDagParser(iterator);
+        String termString1 = "f(x)";
+        String termString2 = "x";
 
-        Term actualTerm = parser.parseTerm();
+        TermPair actualPair = TermPair.fromStrings(termString1, termString2);
 
-        assertEquals(termString, actualTerm.toString());
-        assertEquals(0, actualTerm.getParents().size());
-        assertInstanceOf(FunctionalSymbolTerm.class, actualTerm);
-        List<Term> children = actualTerm.getChildren();
-        assertEquals(2, children.size());
-        Term child1 = children.get(0);
-        Term child2 = children.get(1);
-        assertSame(child1, child2);
-        assertEquals(child1.getParents().size(), child2.getParents().size());
-        assertSame(child1.getParents().get(0), child2.getParents().get(0));
+        assertEquals(termString1, actualPair.term1().toString());
+        assertEquals(termString2, actualPair.term2().toString());
+        Term child = actualPair.term1().getChildren().get(0);
+        assertSame(child.getParents().get(0), actualPair.term1());
+        assertSame(child, actualPair.term2());
     }
 }

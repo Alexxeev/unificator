@@ -5,6 +5,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.text.StringCharacterIterator;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,15 +15,16 @@ class TermTest {
     @Test
     public void toString_ValidFunctionalSymbolTerm() {
         String termString = "f1(x1,c1)";
-        Term term = Term.fromToken(
-                new Token(Token.Type.FUNCTIONAL_SYMBOL,  "1")
+        Term term = new FunctionalSymbolTerm(
+                "f1",
+                Arrays.asList(
+                        Term.fromToken(
+                                new Token(Token.Type.VARIABLE,  "1")),
+                        Term.fromToken(
+                                new Token(Token.Type.CONSTANT,  "1")
+                        )
+                )
         );
-        term.addChild(Term.fromToken(
-                new Token(Token.Type.VARIABLE,  "1")
-        ));
-        term.addChild(Term.fromToken(
-                new Token(Token.Type.CONSTANT,  "1")
-        ));
 
         assertEquals(termString, term.toString());
     }
@@ -29,19 +32,18 @@ class TermTest {
     @Test
     public void toString_ValidFunctionalSymbolTerm2() {
         String termString = "f1(x1,f2(c1))";
-        Term innerTerm = Term.fromToken(
-                new Token(Token.Type.FUNCTIONAL_SYMBOL,  "2")
+        Term term = new FunctionalSymbolTerm(
+                "f1",
+                Arrays.asList(
+                        new ConstantTerm("x1"),
+                        new FunctionalSymbolTerm(
+                                "f2",
+                                Arrays.asList(
+                                        new ConstantTerm("c1")
+                                )
+                        )
+                )
         );
-        innerTerm.addChild(Term.fromToken(
-                new Token(Token.Type.CONSTANT,  "1")
-        ));
-        Term term = Term.fromToken(
-                new Token(Token.Type.FUNCTIONAL_SYMBOL,  "1")
-        );
-        term.addChild(Term.fromToken(
-                new Token(Token.Type.VARIABLE,  "1")
-        ));
-        term.addChild(innerTerm);
 
         assertEquals(termString, term.toString());
     }
@@ -57,7 +59,7 @@ class TermTest {
     public void deepCopy_ValidTerm_ShouldBeEqual(final String termString) {
         Term originalTerm = Term.fromString(termString);
 
-        Term copyTerm = originalTerm.deepCopy();
+        Term copyTerm = Term.copyOf(originalTerm);
 
         assertEquals(originalTerm, copyTerm);
         assertNotSame(originalTerm, copyTerm);
@@ -65,30 +67,32 @@ class TermTest {
 
     @Test
     public void deepCopy_ShouldPreserveIdentities() {
-        Term originalTerm = new TermDagParser(
-                new TokenIterator(
-                        new StringCharacterIterator("f(f1(x,c),f1(x,c))")
-                )
-        ).parseTerm();
+        TermPair originalPair = TermPair.fromStrings("f1(x1,c1)", "f1(x1,f2(c1))");
 
-        Term copyTerm = originalTerm.deepCopy();
+        TermPair copyPair = TermPair.copyOf(originalPair);
 
-        assertInstanceOf(FunctionalSymbolTerm.class, copyTerm);
-        List<Term> children = copyTerm.getChildren();
-        assertEquals(2, children.size());
-        Term child1 = children.get(0);
-        Term child2 = children.get(1);
-        assertSame(child1, child2);
-        assertSame(child1.getParents().get(0), child2.getParents().get(0));
+        assertEquals(originalPair.term1(), copyPair.term1());
+        assertEquals(originalPair.term2(), copyPair.term2());
+        assertNotSame(originalPair.term1(), copyPair.term1());
+        assertNotSame(originalPair.term1(), copyPair.term2());
+        Term child1_1 = copyPair.term1().getChildren().get(0);
+        Term child2_1 = copyPair.term2().getChildren().get(0);
+        assertSame(child1_1, child2_1);
+        assertEquals(2, child1_1.getParents().size());
+        assertSame(copyPair.term1(), child1_1.getParents().get(0));
+        assertSame(copyPair.term2(), child2_1.getParents().get(1));
+        Term child1_2 = copyPair.term1().getChildren().get(1);
+        Term subChild2_2 = copyPair.term2().getChildren().get(1).getChildren().get(0);
+        assertSame(child1_2, subChild2_2);
     }
 
     @Test
     public void toString_SubtermModified_ShouldModifyParentTerm() {
         Term subterm = Term.fromString("f1(c,x)");
-        Term term = Term.fromToken(
-                new Token(Token.Type.FUNCTIONAL_SYMBOL, ""));
-        term.addChild(subterm);
-        term.addChild(subterm);
+        Term term = new FunctionalSymbolTerm(
+                "f",
+                Arrays.asList(subterm, subterm)
+        );
 
         subterm.setChild(1, Term.fromString("c1"));
 
@@ -130,5 +134,10 @@ class TermTest {
         Term term = Term.fromString("f1(c,x)");
 
         assertNotEquals(null, term);
+    }
+
+    @Test
+    public void ctor_nullArgs_shouldThrow() {
+        assertThrows(NullPointerException.class, () -> new TermPair(null, null));
     }
 }

@@ -1,8 +1,15 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
+import syntax.ConstantTerm;
+import syntax.FunctionalSymbolTerm;
 import syntax.Term;
+import syntax.VariableTerm;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -14,6 +21,11 @@ import java.util.Objects;
  * node trees.
  */
 public interface Substitution {
+    @NotNull
+    static Substitution fromTriangularForm(final @NotNull Map<Term, Term> bindingList) {
+        return new TriangularFormConverter(bindingList).convert();
+    }
+
     /**
      * Returns an identity substitution. This substitution has
      * empty domain.
@@ -34,7 +46,7 @@ public interface Substitution {
      */
     @NotNull
     static Substitution of(
-            @NotNull final String variable,
+            @NotNull final Term variable,
             @NotNull final Term replacementTerm) {
         return new ListSubstitution(Map.of(
                 Objects.requireNonNull(variable),
@@ -48,7 +60,7 @@ public interface Substitution {
      * provided variable.
      */
     @NotNull
-    static Substitution of(final @NotNull Map<String, Term> domain) {
+    static Substitution of(final @NotNull Map<Term, Term> domain) {
         return new ListSubstitution(Objects.requireNonNull(domain));
     }
 
@@ -102,7 +114,7 @@ public interface Substitution {
      */
     @NotNull
     Substitution composition(
-            @NotNull final String variable,
+            @NotNull final Term variable,
             @NotNull final Term replacementTerm);
 
     /**
@@ -113,5 +125,5 @@ public interface Substitution {
      *         corresponding replacement term.
      */
     @NotNull
-    Map<String, Term> domain();
+    Map<Term, Term> domain();
 }

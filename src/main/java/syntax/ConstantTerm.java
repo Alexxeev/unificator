@@ -2,6 +2,7 @@ package syntax;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -29,9 +30,6 @@ public final class ConstantTerm extends Term {
         if (copy == null) {
             copy = new ConstantTerm(getName());
             isomorphism.put(this, copy);
-            for (Term parent : getParents()) {
-                copy.addParent(parent.deepCopy(isomorphism));
-            }
         }
         return copy;
     }

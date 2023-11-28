@@ -1,4 +1,5 @@
 import syntax.Term;
+import syntax.TermPair;
 import unification.UnificationResult;
 import unification.UnificationStrategy;
 
@@ -16,10 +17,9 @@ public class Main {
             System.out.println("Provide two terms enclosed in the double quotes");
             System.exit(1);
         }
-        Term term1 = Term.fromString(args[0]);
-        Term term2 = Term.fromString(args[1]);
+        TermPair termPair = TermPair.fromStrings(args[0], args[1]);
 
-        UnificationResult unificationResult = UnificationStrategy.ROBINSON.findUnifier(term1, term2);
+        UnificationResult unificationResult = UnificationStrategy.ROBINSON.findUnifier(termPair);
         if (unificationResult.isUnifiable()) {
             System.out.println("Found unifier for the terms:");
             System.out.println("- " + args[0]);
@@ -27,7 +27,7 @@ public class Main {
             System.out.println("Resulting unifier is:");
             System.out.println(unificationResult.unifier().domain());
             System.out.println("Resulting term is:");
-            System.out.println(unificationResult.unifier().instantiateVariables(term1));
+            System.out.println(unificationResult.unifier().instantiateVariables(termPair.term1()));
         } else {
             System.out.println("Terms");
             System.out.println("- " + args[0]);

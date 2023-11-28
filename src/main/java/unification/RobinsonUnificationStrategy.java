@@ -4,8 +4,11 @@ import org.jetbrains.annotations.NotNull;
 import syntax.ConstantTerm;
 import syntax.FunctionalSymbolTerm;
 import syntax.Term;
+import syntax.TermPair;
 import syntax.VariableTerm;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.Stack;
@@ -19,13 +22,13 @@ class RobinsonUnificationStrategy implements UnificationStrategy {
     }
     @Override
     public @NotNull UnificationResult findUnifier(
-            @NotNull final Term term1, @NotNull final Term term2) {
-        Objects.requireNonNull(term1);
-        Objects.requireNonNull(term2);
+            @NotNull final TermPair termPair) {
+        Objects.requireNonNull(termPair);
         Substitution substitution = Substitution.identity();
-        Stack<Term> termStack = new Stack<>();
-        termStack.push(term1);
-        termStack.push(term2);
+        Deque<Term> termStack = new ArrayDeque<>();
+        TermPair termPairCopy = TermPair.copyOf(termPair);
+        termStack.push(termPairCopy.term1());
+        termStack.push(termPairCopy.term2());
         while (!termStack.isEmpty()) {
             Term currentTerm2 = termStack.pop();
             Term currentTerm1 = termStack.pop();
@@ -67,7 +70,7 @@ class RobinsonUnificationStrategy implements UnificationStrategy {
                 return UnificationResult.notUnifiable();
             } else {
                 substitution = substitution.composition(
-                        currentTerm1.getName(), currentTerm2);
+                        currentTerm1, currentTerm2);
             }
         }
         return UnificationResult.unifiable(substitution);

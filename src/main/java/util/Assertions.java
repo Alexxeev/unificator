@@ -7,4 +7,9 @@ public final class Assertions {
         if (!condition)
             throw new IllegalStateException(message);
     }
+
+    public static void require(boolean condition, final String message) {
+        if  (!condition)
+            throw new IllegalArgumentException(message);
+    }
 }

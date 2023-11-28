@@ -19,14 +19,22 @@ public final class FunctionalSymbolTerm extends Term {
     /**
      * A list that contains children nodes of this term
      */
-    private final List<Term> children = new ArrayList<>();
+    private final List<Term> children;
 
     /**
      * Creates a functional symbol term node with provided name.
      * @param name name of the functional symbol
      */
     FunctionalSymbolTerm(final @NotNull String name) {
+        this(name, new ArrayList<>());
+    }
+
+    public FunctionalSymbolTerm(
+            final @NotNull String name,
+            final @NotNull List<Term> arguments) {
         super(name);
+        arguments.forEach(arg -> arg.addParent(this));
+        this.children = arguments;
     }
 
     @Override
@@ -48,15 +56,14 @@ public final class FunctionalSymbolTerm extends Term {
     protected @NotNull Term deepCopy(@NotNull Map<Term, Term> isomorphism) {
         Term copy = isomorphism.get(this);
         if (copy == null) {
-            copy = new FunctionalSymbolTerm(
-                    this.getName());
-            isomorphism.put(this, copy);
+            List<Term> copyArgs = new ArrayList<>();
             for (Term child : this.getChildren()) {
-                copy.addChild(child.deepCopy(isomorphism));
+                copyArgs.add(child.deepCopy(isomorphism));
             }
-            for (Term parent : this.getParents()) {
-                copy.addParent(parent.deepCopy(isomorphism));
-            }
+            copy = new FunctionalSymbolTerm(
+                    this.getName(),
+                    copyArgs);
+            isomorphism.put(this, copy);
         }
         return copy;
     }
@@ -70,11 +77,6 @@ public final class FunctionalSymbolTerm extends Term {
             }
         }
         return domain;
-    }
-
-    @Override
-    public void addChild(final @NotNull Term term) {
-        children.add(term);
     }
 
     @Override

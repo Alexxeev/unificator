@@ -36,7 +36,7 @@ final class TermParser {
      */
     @NotNull
     private List<Term> parseArguments() {
-        Assertions.check(tokenIterator.next().tokenType() == Token.Type.LEFT_PARENTHESIS,
+        Assertions.require(tokenIterator.next().tokenType() == Token.Type.LEFT_PARENTHESIS,
                 "expected a left parenthesis after functional symbol");
         List<Term> arguments = new ArrayList<>();
         while (tokenIterator.hasNext()) {
@@ -45,7 +45,7 @@ final class TermParser {
             if (tokenType == Token.Type.RIGHT_PARENTHESIS) {
                 return arguments;
             }
-            Assertions.check(tokenType == Token.Type.COMMA,
+            Assertions.require(tokenType == Token.Type.COMMA,
                     "expected a comma or right parenthesis after an argument");
         }
         throw new IllegalArgumentException("Unexpected EOF while reading arguments");
@@ -61,13 +61,10 @@ final class TermParser {
         if (!tokenIterator.hasNext()) {
             throw new IllegalArgumentException("Unexpected EOF while reading tokens");
         }
-        Term term = Term.fromToken(tokenIterator.next());
-        if (term instanceof FunctionalSymbolTerm functionalSymbolTermNode) {
-            List<Term> arguments = parseArguments();
-            for (Term argument : arguments) {
-                functionalSymbolTermNode.addChild(argument);
-            }
+        Token token = tokenIterator.next();
+        if (token.tokenType() == Token.Type.FUNCTIONAL_SYMBOL) {
+            return new FunctionalSymbolTerm(token.toString(), parseArguments());
         }
-        return term;
+        return Term.fromToken(token);
     }
 }
