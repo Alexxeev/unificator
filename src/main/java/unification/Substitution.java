@@ -3,6 +3,7 @@ package unification;
 import org.jetbrains.annotations.NotNull;
 import syntax.Term;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -34,7 +35,7 @@ public interface Substitution {
      */
     @NotNull
     static Substitution of(
-            @NotNull final String variable,
+            @NotNull final Term variable,
             @NotNull final Term replacementTerm) {
         return new ListSubstitution(Map.of(
                 Objects.requireNonNull(variable),
@@ -48,7 +49,7 @@ public interface Substitution {
      * provided variable.
      */
     @NotNull
-    static Substitution of(final @NotNull Map<String, Term> domain) {
+    static Substitution of(final @NotNull Map<Term, Term> domain) {
         return new ListSubstitution(Objects.requireNonNull(domain));
     }
 
@@ -102,7 +103,7 @@ public interface Substitution {
      */
     @NotNull
     Substitution composition(
-            @NotNull final String variable,
+            @NotNull final Term variable,
             @NotNull final Term replacementTerm);
 
     /**
@@ -113,5 +114,5 @@ public interface Substitution {
      *         corresponding replacement term.
      */
     @NotNull
-    Map<String, Term> domain();
+    Map<Term, Term> domain();
 }

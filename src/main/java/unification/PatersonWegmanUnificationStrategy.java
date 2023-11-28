@@ -25,7 +25,7 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
     private final Map<Term, Term> pointers = new IdentityHashMap<>();
     private final Set<Term> finished = Collections.newSetFromMap(new IdentityHashMap<>());
     private final Map<Term, List<Term>> links = new IdentityHashMap<>();
-    private final Map<String, Term> bindingList = new HashMap<>();
+    private final Map<Term, Term> bindingList = new HashMap<>();
     @Override
     public @NotNull UnificationResult findUnifier(@NotNull final TermPair termPair) {
         TermPair termPairCopy = TermPair.copyOf(Objects.requireNonNull(termPair));
@@ -95,7 +95,7 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
             }
             if (!currentTerm.equals(term)) {
                 if (currentTerm instanceof VariableTerm) {
-                    bindingList.put(currentTerm.getName(), term);
+                    bindingList.put(currentTerm, term);
                 } else if (currentTerm instanceof FunctionalSymbolTerm) {
                     Iterator<Term> currentTermChildren = currentTerm.getChildren().listIterator();
                     Iterator<Term> termChildren = term.getChildren().listIterator();

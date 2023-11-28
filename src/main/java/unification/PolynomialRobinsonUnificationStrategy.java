@@ -17,7 +17,7 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
     public @NotNull UnificationResult findUnifier(
             @NotNull final TermPair termPair) {
         TermPair termPairCopy = TermPair.copyOf(Objects.requireNonNull(termPair));
-        Map<String, Term> bindingList = new HashMap<>();
+        Map<Term, Term> bindingList = new HashMap<>();
         try {
             findUnifierRecursive(termPairCopy.term1(), termPairCopy.term2(), bindingList);
         } catch (IllegalStateException e) {
@@ -27,7 +27,7 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
     }
 
     private void findUnifierRecursive(
-            Term term1, Term term2, Map<String, Term> bindingList) {
+            Term term1, Term term2, Map<Term, Term> bindingList) {
         if (term1.equals(term2)) {
             //Do nothing
         } else if (term1 instanceof FunctionalSymbolTerm
@@ -56,7 +56,7 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
         } else if (term2.contains(term1)) {
             throw new IllegalStateException("Occurs check");
         } else {
-            bindingList.put(term1.getName(), term2);
+            bindingList.put(term1, term2);
             replace(term1, term2);
         }
     }

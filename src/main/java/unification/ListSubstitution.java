@@ -19,7 +19,7 @@ import java.util.Objects;
  *               to the term set
  */
 record ListSubstitution(
-        Map<String, Term> domain
+        Map<Term, Term> domain
 ) implements Substitution {
 
     @NotNull
@@ -34,8 +34,8 @@ record ListSubstitution(
     @Override
     public Term instantiateVariablesInPlace(@NotNull final Term term) {
         if (term instanceof VariableTerm
-                && domain.containsKey(term.getName())) {
-            return domain.get(term.getName());
+                && domain.containsKey(term)) {
+            return domain.get(term);
         }
         if (term instanceof FunctionalSymbolTerm) {
             List<Term> children = term.getChildren();
@@ -54,16 +54,16 @@ record ListSubstitution(
         Objects.requireNonNull(other);
         //create shallow copy of map to prevent
         // destruction of original substitution
-        Map<String, Term> newDomain = new HashMap<>(domain);
-        for (Map.Entry<String, Term> entry : newDomain.entrySet()) {
+        Map<Term, Term> newDomain = new HashMap<>(domain);
+        for (Map.Entry<Term, Term> entry : newDomain.entrySet()) {
             Term modifiedTerm = other.instantiateVariables(entry.getValue());
-            if (modifiedTerm.getName().equals(entry.getKey())) {
+            if (modifiedTerm.nameEquals(entry.getKey())) {
                 newDomain.remove(entry.getKey());
             } else {
                 newDomain.replace(entry.getKey(), modifiedTerm);
             }
         }
-        for (Map.Entry<String, Term> entry : other.domain().entrySet()) {
+        for (Map.Entry<Term, Term> entry : other.domain().entrySet()) {
             if (!domain.containsKey(entry.getKey())) {
                 newDomain.put(entry.getKey(), entry.getValue());
             }
@@ -74,7 +74,7 @@ record ListSubstitution(
     @NotNull
     @Override
     public Substitution composition(
-            final @NotNull String variable,
+            final @NotNull Term variable,
             final @NotNull Term replacementTerm) {
         Objects.requireNonNull(variable);
         Objects.requireNonNull(replacementTerm);

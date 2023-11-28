@@ -70,7 +70,7 @@ class RobinsonUnificationStrategy implements UnificationStrategy {
                 return UnificationResult.notUnifiable();
             } else {
                 substitution = substitution.composition(
-                        currentTerm1.getName(), currentTerm2);
+                        currentTerm1, currentTerm2);
             }
         }
         return UnificationResult.unifiable(substitution);
