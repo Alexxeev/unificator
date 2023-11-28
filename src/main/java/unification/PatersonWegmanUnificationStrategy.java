@@ -82,7 +82,7 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
                 isUnifiable = false;
                 return;
             }
-            for (Term parent : term.getParents()) {
+            for (Term parent : currentTerm.getParents()) {
                 finish(parent);
             }
             for (Term link : links.getOrDefault(currentTerm, List.of())) {
