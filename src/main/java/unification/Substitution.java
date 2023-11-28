@@ -23,68 +23,9 @@ import java.util.Objects;
 public interface Substitution {
     @NotNull
     static Substitution fromTriangularForm(final @NotNull Map<Term, Term> bindingList) {
-        final Map<Term, Term> domain = new HashMap<>();
-        final Map<Term, Term> ready = new HashMap<>();
-        for (Map.Entry<Term, Term> entry : bindingList.entrySet()) {
-            domain.put(
-                    entry.getKey(),
-                    exploreVariable(entry.getKey(), bindingList, ready));
-        }
-        return Substitution.of(domain);
+        return new TriangularFormConverter(bindingList).convert();
     }
 
-    private static Term exploreVariable(
-            Term variable,
-            Map<Term, Term> bindingList,
-            Map<Term, Term> ready) {
-        if (ready.containsKey(variable)) {
-            return ready.get(variable);
-        }
-        Term result = descend(bindingList.get(variable), bindingList, ready);
-        if (result == null) {
-            result = variable;
-        }
-        ready.put(variable, result);
-        return result;
-    }
-
-    private static Term descend(
-            Term term,
-            Map<Term, Term> bindingList,
-            Map<Term, Term> ready
-    ) {
-        if (term == null) {
-            return null;
-        }
-        if (term instanceof VariableTerm) {
-            return exploreVariable(term, bindingList, ready);
-        }
-        if (term instanceof ConstantTerm) {
-            return term;
-        }
-        if (ready.containsKey(term)) {
-            return ready.get(term);
-        }
-        List<Term> result = exploreArgs(term.getChildren(), bindingList, ready);
-        if (result.equals(term.getChildren())) {
-            ready.put(term, term);
-        } else {
-            ready.put(term, new FunctionalSymbolTerm(term.getName(), result));
-        }
-        return ready.get(term);
-
-    }
-
-    private static List<Term> exploreArgs(
-            List<Term> args,
-            Map<Term, Term> bindingList,
-            Map<Term, Term> ready) {
-        List<Term> newArgs = new ArrayList<>();
-        for (Term arg : args) {
-            newArgs.add(descend(arg, bindingList, ready));
-        }
-        return newArgs;
-    }
     /**
      * Returns an identity substitution. This substitution has
      * empty domain.
