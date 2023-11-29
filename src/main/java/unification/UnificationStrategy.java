@@ -10,12 +10,6 @@ import syntax.TermPair;
  * terms
  */
 public interface UnificationStrategy {
-    @NotNull
-    UnificationStrategy ROBINSON = new RobinsonUnificationStrategy();
-    @NotNull
-    UnificationStrategy ROBINSON_POLYNOMIAL
-            = new PolynomialRobinsonUnificationStrategy();
-
     /**
      * Finds a unifier of set of two terms.
      *

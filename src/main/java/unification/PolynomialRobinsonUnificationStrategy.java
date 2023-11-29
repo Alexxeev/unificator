@@ -12,6 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * A more efficient implementation of Robinson's unification algorithm
+ * that takes advantage of directed acyclic graph representation of terms. It also
+ * reduces excessive method calls by isolating variable terms that are already
+ * substituted with term.
+ */
 public class PolynomialRobinsonUnificationStrategy implements UnificationStrategy {
     @Override
     public @NotNull UnificationResult findUnifier(
@@ -26,6 +32,13 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
         return UnificationResult.unifiable(Substitution.of(bindingList));
     }
 
+    /**
+     * Internal recursive method that finds unifier for two terms
+     *
+     * @param term1 first term
+     * @param term2 second term
+     * @param bindingList a list of bindings
+     */
     private void findUnifierRecursive(
             Term term1, Term term2, Map<Term, Term> bindingList) {
         if (term1.equals(term2)) {
@@ -61,6 +74,13 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
         }
     }
 
+    /**
+     * Moves parent nodes of the {@code term} to the {@code replacement}.
+     * As a result of this operation {@code term} will be isolated.
+     *
+     * @param term term to isolate
+     * @param replacement term to move parents to
+     */
     private void replace(Term term, Term replacement) {
         for (Term parent : term.getParents()) {
             parent.replaceChild(term, replacement);

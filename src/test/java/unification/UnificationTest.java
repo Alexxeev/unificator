@@ -18,7 +18,7 @@ class UnificationTest {
     public void testRobinsonUnification_termsAreUnifiable(String termString1, String termString2) {
         TermPair termPair = TermPair.fromStrings(termString1, termString2);
 
-        UnificationResult unificationResult = UnificationStrategy.ROBINSON.findUnifier(termPair);
+        UnificationResult unificationResult = new RobinsonUnificationStrategy().findUnifier(termPair);
 
         assertTrue(unificationResult.isUnifiable());
         Substitution unifier = unificationResult.unifier();
@@ -38,7 +38,7 @@ class UnificationTest {
     public void testPolynomialRobinsonUnification_termsAreUnifiable(String termString1, String termString2) {
         TermPair termPair = TermPair.fromStrings(termString1, termString2);
 
-        UnificationResult unificationResult = UnificationStrategy.ROBINSON_POLYNOMIAL.findUnifier(termPair);
+        UnificationResult unificationResult = new PolynomialRobinsonUnificationStrategy().findUnifier(termPair);
 
         assertTrue(unificationResult.isUnifiable());
         Substitution unifier = unificationResult.unifier();
