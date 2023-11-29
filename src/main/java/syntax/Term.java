@@ -71,6 +71,7 @@ public abstract class Term implements Iterable<Term> {
     /**
      * Constructs a deep copy of the provided term.
      *
+     * @param term a term to copy.
      * @return deep copy of this term.
      */
     @NotNull
@@ -189,6 +190,8 @@ public abstract class Term implements Iterable<Term> {
     /**
      * Internal method to build deep copy of this term.
      *
+     * @param isomorphism a map that contains unique instances of
+     *                    every subterm of this term.
      * @return deep copy of this term.
      */
     @NotNull
@@ -262,12 +265,26 @@ public abstract class Term implements Iterable<Term> {
                 new StringBuilder()).toString();
     }
 
+    /**
+     * Returns an iterator over the nodes of this term.
+     * Elements are traversed using depth-first traversal
+     * method.
+     *
+     * @return iterator over the nodes of this term.
+     */
     @NotNull
     @Override
     public Iterator<Term> iterator() {
         return new PreOrderTermIterator(this);
     }
 
+    /**
+     * Compares the names of this term and provided term.
+     *
+     * @param other other term
+     * @return true if {@code other} is not null and its name
+     *         equals to the name of this term.
+     */
     public boolean nameEquals(final Term other) {
         return other != null && getName().equals(other.getName());
     }

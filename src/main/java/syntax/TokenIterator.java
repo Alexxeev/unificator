@@ -74,6 +74,14 @@ final class TokenIterator implements Iterator<Token> {
         this.characterIterator = Objects.requireNonNull(characterIterator);
     }
 
+    /**
+     * Creates a new token iterator with provided string.
+     * It creates a new {@link StringCharacterIterator}
+     * for the provided string.
+     *
+     * @param s a term string
+     * @return a new iterator over tokens in the provided string
+     */
     public static TokenIterator of(@NotNull final String s) {
         return new TokenIterator(new StringCharacterIterator(Objects.requireNonNull(s)));
     }

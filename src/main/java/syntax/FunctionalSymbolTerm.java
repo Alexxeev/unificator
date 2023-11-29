@@ -29,6 +29,12 @@ public final class FunctionalSymbolTerm extends Term {
         this(name, new ArrayList<>());
     }
 
+    /**
+     * Constructs a new term with provided name and list of arguments
+     *
+     * @param name name of this term
+     * @param arguments list of arguments of this term
+     */
     public FunctionalSymbolTerm(
             final @NotNull String name,
             final @NotNull List<Term> arguments) {

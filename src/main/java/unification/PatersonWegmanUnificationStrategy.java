@@ -20,11 +20,29 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * An implementation of a linear unification algorithm by Paterson and Wegman.
+ */
 public final class PatersonWegmanUnificationStrategy implements UnificationStrategy {
+    /**
+     * A flag that is set to false if terms are not unifiable.
+     */
     private boolean isUnifiable = true;
+    /**
+     * A list of pointers
+     */
     private final Map<Term, Term> pointers = new IdentityHashMap<>();
+    /**
+     * A set of already processed terms
+     */
     private final Set<Term> finished = Collections.newSetFromMap(new IdentityHashMap<>());
+    /**
+     * A list of undirected edges between nodes of two graphs
+     */
     private final Map<Term, List<Term>> links = new IdentityHashMap<>();
+    /**
+     * A unifier in the triangular form.
+     */
     private final Map<Term, Term> bindingList = new HashMap<>();
     @Override
     public @NotNull UnificationResult findUnifier(@NotNull final TermPair termPair) {
@@ -41,8 +59,15 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
         return UnificationResult.notUnifiable();
     }
 
-
-
+    /**
+     * Main method of finding unifier.
+     * It calls {@link #processIterator(Iterator, Predicate)}
+     * for every term iterator.
+     *
+     * @param term1 first term
+     * @param term2 second term
+     * @param instancePredicate a term instance check
+     */
     private void finish(Term term1, Term term2, Predicate<Term> instancePredicate) {
         Iterator<Term> iterator1 = term1.iterator();
         Iterator<Term> iterator2 = term2.iterator();
@@ -52,6 +77,14 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
         }
     }
 
+    /**
+     * Checks that provided {@code iterator} has terms to iterate over and
+     * calls {@link #finish(Term)} for the next term if it passes provided
+     * instance check
+     *
+     * @param iterator term iterator
+     * @param instancePredicate a term instance check
+     */
     private void processIterator(Iterator<Term> iterator, Predicate<Term> instancePredicate) {
         if (!iterator.hasNext()) {
             return;
@@ -63,6 +96,11 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
         finish(currentTerm);
     }
 
+    /**
+     * A core method of term unification.
+     *
+     * @param term a term
+     */
     private void finish(Term term) {
         if (finished.contains(term)) {
             return;
@@ -114,6 +152,15 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
         finished.add(term);
     }
 
+    /**
+     * Checks whether the provided terms are either functional symbol terms
+     * or constant terms.
+     *
+     * @param term1 first term
+     * @param term2 second term
+     * @return true if the provided terms are either functional symbol terms
+     *         or constant terms.
+     */
     private boolean areFuncsOrConstants(Term term1, Term term2) {
         return (term1 instanceof FunctionalSymbolTerm &&
                 term2 instanceof FunctionalSymbolTerm) ||
@@ -121,6 +168,12 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
                  term2 instanceof ConstantTerm);
     }
 
+    /**
+     * Creates an undirected edge between two nodes
+     *
+     * @param term1 first node
+     * @param term2 second node
+     */
     private void createLink(Term term1, Term term2) {
         links.computeIfAbsent(term1, t -> new ArrayList<>()).add(term2);
         links.computeIfAbsent(term2, t -> new ArrayList<>()).add(term1);

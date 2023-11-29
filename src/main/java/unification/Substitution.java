@@ -21,6 +21,13 @@ import java.util.Objects;
  * node trees.
  */
 public interface Substitution {
+    /**
+     * Constructs a new substitution from provided substitution in
+     * the triangular (ordered) form.
+     *
+     * @param bindingList list of bindings
+     * @return a new substitution from provided binding list
+     */
     @NotNull
     static Substitution fromTriangularForm(final @NotNull Map<Term, Term> bindingList) {
         return new TriangularFormConverter(bindingList).convert();

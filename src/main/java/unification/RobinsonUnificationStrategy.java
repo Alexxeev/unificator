@@ -16,10 +16,7 @@ import java.util.Stack;
 /**
  * An implementation of Robinson's unification algorithm
  */
-class RobinsonUnificationStrategy implements UnificationStrategy {
-    protected RobinsonUnificationStrategy() {
-
-    }
+public class RobinsonUnificationStrategy implements UnificationStrategy {
     @Override
     public @NotNull UnificationResult findUnifier(
             @NotNull final TermPair termPair) {

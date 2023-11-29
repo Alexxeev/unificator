@@ -20,30 +20,43 @@ final class TermDagParser {
     /**
      * Creates a new parser with provided {@code TokenIterator} instance.
      *
-     * @param tokenIterator a token iterator
+     * @param tokenIterator1 a token iterator of the first term.
+     * @param tokenIterator2 a token iterator of the second term.
      */
     TermDagParser(
-            final @NotNull TokenIterator tokenIterator,
+            final @NotNull TokenIterator tokenIterator1,
             final @NotNull TokenIterator tokenIterator2) {
-        this.tokenIterator1 = Objects.requireNonNull(tokenIterator);
+        this.tokenIterator1 = Objects.requireNonNull(tokenIterator1);
         this.tokenIterator2 = Objects.requireNonNull(tokenIterator2);
     }
 
     /**
-     * A token iterator
+     * A token iterator of the first term
      */
     @NotNull
     private final TokenIterator tokenIterator1;
 
+    /**
+     * A token iterator of the second term
+     */
     @NotNull
     private final TokenIterator tokenIterator2;
 
     /**
      * A set of all subterms occurred in the term.
+     * <br>
+     * Note: We have to use Map interface rather than Set one
+     * because Set interface does not provide a method
+     * to search for an element.
      */
     @NotNull
     private final Map<Term, Term> uniqueTerms = new HashMap<>();
 
+    /**
+     * Constructs a pair of terms
+     *
+     * @return pair of terms
+     */
     public TermPair parseTermPair() {
         return new TermPair(
                 parseTerm(tokenIterator1),
@@ -54,6 +67,7 @@ final class TermDagParser {
     /**
      * Constructs a term.
      *
+     * @param tokenIterator an iterator over term tokens
      * @return a root of the syntax tree
      */
     private Term parseTerm(TokenIterator tokenIterator) {
@@ -71,6 +85,9 @@ final class TermDagParser {
 
     /**
      * Constructs a list of the arguments of the functional symbol term.
+     *
+     * @param tokenIterator an iterator over term tokens.
+     * @return list of terms.
      */
     private List<Term> parseArgs(TokenIterator tokenIterator) {
         Assertions.require(tokenIterator.next().tokenType() == Token.Type.LEFT_PARENTHESIS,
