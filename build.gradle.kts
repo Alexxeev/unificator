@@ -17,6 +17,7 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.1"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
     implementation("org.jetbrains:annotations:24.1.0")
 }
