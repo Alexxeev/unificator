@@ -1,7 +1,6 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.Term;
 import syntax.TermPair;
 
 /**
