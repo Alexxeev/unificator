@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -88,11 +87,6 @@ public final class FunctionalSymbolTerm extends Term {
     @Override
     public @NotNull List<Term> getChildren() {
         return Collections.unmodifiableList(children);
-    }
-
-    @Override
-    public void setChild(final int index, final @NotNull Term term) {
-        children.set(index, Objects.requireNonNull(term));
     }
 
     @Override

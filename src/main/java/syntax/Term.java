@@ -152,20 +152,6 @@ public abstract class Term implements Iterable<Term> {
     }
 
     /**
-     * Replaces the element at the specified position in the child node list
-     * with the specified element.
-     *
-     * @param index index of child node to replace
-     * @param term child node to be stored at the specified position
-     * @throws IndexOutOfBoundsException if the index is out of range
-     *         ({@code index < 0 || index > size()})
-     * @throws UnsupportedOperationException if this term is leaf one
-     */
-    public void setChild(final int index, final @NotNull Term term) {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
      * Replaces all the occurrences of the specified subterm with
      * other specified subterm
      *

@@ -86,19 +86,6 @@ class TermTest {
         assertSame(child1_2, subChild2_2);
     }
 
-    @Test
-    public void toString_SubtermModified_ShouldModifyParentTerm() {
-        Term subterm = Term.fromString("f1(c,x)");
-        Term term = new FunctionalSymbolTerm(
-                "f",
-                Arrays.asList(subterm, subterm)
-        );
-
-        subterm.setChild(1, Term.fromString("c1"));
-
-        assertEquals("f(f1(c,c1),f1(c,c1))", term.toString());
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {
             "c1",
