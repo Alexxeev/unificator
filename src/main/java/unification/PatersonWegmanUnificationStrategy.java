@@ -2,6 +2,7 @@ package unification;
 
 import org.jetbrains.annotations.NotNull;
 import syntax.ConstantTerm;
+import syntax.FunctionalSymbolFirstTermIterator;
 import syntax.FunctionalSymbolTerm;
 import syntax.Term;
 import syntax.TermPair;
@@ -49,51 +50,14 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
         TermPair termPairCopy = TermPair.copyOf(Objects.requireNonNull(termPair));
         createLink(termPairCopy.term1(), termPairCopy.term2());
 
-        finish(termPairCopy.term1(), termPairCopy.term2(), term ->
-                (term instanceof FunctionalSymbolTerm) || (term instanceof ConstantTerm));
-        finish(termPairCopy.term1(), termPairCopy.term2(), term -> term instanceof VariableTerm);
+        Iterator<Term> funcFirstIterator = new FunctionalSymbolFirstTermIterator(
+                termPairCopy);
+        funcFirstIterator.forEachRemaining(this::finish);
 
         if (isUnifiable) {
             return UnificationResult.unifiable(Substitution.fromTriangularForm(bindingList));
         }
         return UnificationResult.notUnifiable();
-    }
-
-    /**
-     * Main method of finding unifier.
-     * It calls {@link #processIterator(Iterator, Predicate)}
-     * for every term iterator.
-     *
-     * @param term1 first term
-     * @param term2 second term
-     * @param instancePredicate a term instance check
-     */
-    private void finish(Term term1, Term term2, Predicate<Term> instancePredicate) {
-        Iterator<Term> iterator1 = term1.iterator();
-        Iterator<Term> iterator2 = term2.iterator();
-        while (iterator1.hasNext() || iterator2.hasNext()) {
-            processIterator(iterator1, instancePredicate);
-            processIterator(iterator2, instancePredicate);
-        }
-    }
-
-    /**
-     * Checks that provided {@code iterator} has terms to iterate over and
-     * calls {@link #finish(Term)} for the next term if it passes provided
-     * instance check
-     *
-     * @param iterator term iterator
-     * @param instancePredicate a term instance check
-     */
-    private void processIterator(Iterator<Term> iterator, Predicate<Term> instancePredicate) {
-        if (!iterator.hasNext()) {
-            return;
-        }
-        Term currentTerm = iterator.next();
-        if (!instancePredicate.test(currentTerm)) {
-            return;
-        }
-        finish(currentTerm);
     }
 
     /**
