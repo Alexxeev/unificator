@@ -25,9 +25,8 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
         Objects.requireNonNull(termPair);
         Map<Term, Term> substitutionDomain = new HashMap<>();
         Deque<Term> termStack = new ArrayDeque<>();
-        TermPair termPairCopy = TermPair.copyOf(termPair);
-        termStack.push(termPairCopy.term1());
-        termStack.push(termPairCopy.term2());
+        termStack.push(termPair.term1());
+        termStack.push(termPair.term2());
         while (!termStack.isEmpty()) {
             Term currentTerm2 = termStack.pop();
             Term currentTerm1 = termStack.pop();
