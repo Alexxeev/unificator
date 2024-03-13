@@ -8,6 +8,13 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Queue;
 
+/**
+ * This class provides an ability to iterate over nodes
+ * in the syntax tree.
+ * This class uses a variant of pre-order breadth-first traversal method
+ * that traverses nodes in a way that functional symbols and constants
+ * are traversed first.
+ */
 public class FunctionalSymbolFirstTermIterator implements Iterator<Term> {
     /**
      * Contains nodes to be traversed
