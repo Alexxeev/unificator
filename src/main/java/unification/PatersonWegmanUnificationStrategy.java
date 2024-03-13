@@ -47,11 +47,11 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
     private final Map<Term, Term> bindingList = new HashMap<>();
     @Override
     public @NotNull UnificationResult findUnifier(@NotNull final TermPair termPair) {
-        TermPair termPairCopy = TermPair.copyOf(Objects.requireNonNull(termPair));
-        createLink(termPairCopy.term1(), termPairCopy.term2());
+        //TermPair termPairCopy = TermPair.copyOf(Objects.requireNonNull(termPair));
+        createLink(termPair.term1(), termPair.term2());
 
         Iterator<Term> funcFirstIterator = new FunctionalSymbolFirstTermIterator(
-                termPairCopy);
+                termPair);
         funcFirstIterator.forEachRemaining(this::finish);
 
         if (isUnifiable) {
