@@ -9,7 +9,9 @@ import syntax.VariableTerm;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 
@@ -21,7 +23,7 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
     public @NotNull UnificationResult findUnifier(
             @NotNull final TermPair termPair) {
         Objects.requireNonNull(termPair);
-        Substitution substitution = Substitution.identity();
+        Map<Term, Term> substitutionDomain = new HashMap<>();
         Deque<Term> termStack = new ArrayDeque<>();
         TermPair termPairCopy = TermPair.copyOf(termPair);
         termStack.push(termPairCopy.term1());
@@ -30,12 +32,12 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
             Term currentTerm2 = termStack.pop();
             Term currentTerm1 = termStack.pop();
             if (currentTerm1 instanceof VariableTerm) {
-                currentTerm1 = substitution
-                        .instantiateVariablesInPlace(currentTerm1);
+                currentTerm1 = substitutionDomain
+                        .getOrDefault(currentTerm1, currentTerm1);
             }
             if (currentTerm2 instanceof VariableTerm) {
-                currentTerm2 = substitution
-                        .instantiateVariablesInPlace(currentTerm2);
+                currentTerm2 = substitutionDomain
+                        .getOrDefault(currentTerm1, currentTerm2);
             }
             if (currentTerm1 instanceof VariableTerm
                     && currentTerm1.getName().equals(currentTerm2.getName())) {
@@ -66,10 +68,32 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
                     currentTerm1.toString())) {
                 return UnificationResult.notUnifiable();
             } else {
-                substitution = substitution.composition(
-                        currentTerm1, currentTerm2);
+                composition(
+                        substitutionDomain,
+                        currentTerm1,
+                        currentTerm2);
             }
         }
-        return UnificationResult.unifiable(substitution);
+        return UnificationResult.unifiable(Substitution.of(substitutionDomain));
+    }
+
+    /**
+     * Performs a composition operation on this substitution
+     * with other substitution defined by provided variable-term
+     * pair.
+     * @param variable a variable
+     * @param replacementTerm a term
+     */
+    private void composition(
+            Map<Term, Term> substitutionDomain,
+            Term variable,
+            Term replacementTerm) {
+        Substitution singleSubstitution = Substitution.of(variable, replacementTerm);
+
+        for (var entry: substitutionDomain.entrySet()) {
+            Term newReplacement = singleSubstitution.instantiateVariables(entry.getValue());
+            substitutionDomain.put(entry.getKey(), newReplacement);
+        }
+        substitutionDomain.put(variable, replacementTerm);
     }
 }
