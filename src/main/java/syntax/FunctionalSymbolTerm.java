@@ -90,11 +90,6 @@ public final class FunctionalSymbolTerm extends Term {
     }
 
     @Override
-    public void replaceChild(@NotNull final Term from, @NotNull final Term to) {
-        Collections.replaceAll(children, from, to);
-    }
-
-    @Override
     public boolean isLeafNode() {
         return getChildren().isEmpty();
     }

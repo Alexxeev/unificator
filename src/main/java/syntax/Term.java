@@ -112,23 +112,6 @@ public abstract class Term implements Iterable<Term> {
     }
 
     /**
-     * Inserts the specified list of term nodes
-     * as parent nodes in the end of the parent node list.
-     *
-     * @param newParents node to be inserted.
-     */
-    public void addParents(@NotNull final List<Term> newParents) {
-        parents.addAll(Objects.requireNonNull(newParents));
-    }
-
-    /**
-     * Isolates this term by removing all its parent nodes
-     */
-    public void removeParents() {
-        parents.clear();
-    }
-
-    /**
      * Returns a list that contains parent nodes of this node.
      * Note that returned list is immutable.
      *
@@ -148,18 +131,6 @@ public abstract class Term implements Iterable<Term> {
      */
     @NotNull
     public List<Term> getChildren() {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * Replaces all the occurrences of the specified subterm with
-     * other specified subterm
-     *
-     * @param from subterm to be replaced
-     * @param to replacement subterm
-     * @throws UnsupportedOperationException if this term is leaf one
-     */
-    public void replaceChild(@NotNull final Term from, @NotNull final Term to) {
         throw new UnsupportedOperationException();
     }
 
