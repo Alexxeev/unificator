@@ -1,11 +1,11 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.ConstantTerm;
-import syntax.FunctionalSymbolTerm;
+import syntax.Constant;
+import syntax.TermWithArgs;
 import syntax.Term;
 import syntax.TermPair;
-import syntax.VariableTerm;
+import syntax.Variable;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Stack;
 
 /**
  * An implementation of Robinson's unification algorithm
@@ -30,23 +29,23 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
         while (!termStack.isEmpty()) {
             Term currentTerm2 = termStack.pop();
             Term currentTerm1 = termStack.pop();
-            if (currentTerm1 instanceof VariableTerm) {
+            if (currentTerm1 instanceof Variable) {
                 currentTerm1 = substitutionDomain
                         .getOrDefault(currentTerm1, currentTerm1);
             }
-            if (currentTerm2 instanceof VariableTerm) {
+            if (currentTerm2 instanceof Variable) {
                 currentTerm2 = substitutionDomain
                         .getOrDefault(currentTerm1, currentTerm2);
             }
-            if (currentTerm1 instanceof VariableTerm
+            if (currentTerm1 instanceof Variable
                     && currentTerm1.getName().equals(currentTerm2.getName())) {
                 // Do nothing
-            } else if (currentTerm1 instanceof FunctionalSymbolTerm
-                    && currentTerm2 instanceof FunctionalSymbolTerm) {
+            } else if (currentTerm1 instanceof TermWithArgs currentTerm1WithArgs
+                    && currentTerm2 instanceof TermWithArgs currentTerm2WithArgs) {
                 String name1 = currentTerm1.getName();
                 String name2 = currentTerm2.getName();
-                List<Term> children1 = currentTerm1.getChildren();
-                List<Term> children2 = currentTerm2.getChildren();
+                List<Term> children1 = currentTerm1WithArgs.getChildren();
+                List<Term> children2 = currentTerm2WithArgs.getChildren();
                 if (!name1.equals(name2)
                         || children1.size() != children2.size()) {
                     return UnificationResult.notUnifiable();
@@ -55,16 +54,15 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
                     termStack.push(children1.get(i));
                     termStack.push(children2.get(i));
                 }
-            } else if (currentTerm1 instanceof ConstantTerm
-                    && currentTerm2 instanceof ConstantTerm) {
+            } else if (currentTerm1 instanceof Constant
+                    && currentTerm2 instanceof Constant) {
                 if (!currentTerm1.getName().equals(currentTerm2.getName())) {
                     return UnificationResult.notUnifiable();
                 }
-            } else if (!(currentTerm1 instanceof VariableTerm)) {
+            } else if (!(currentTerm1 instanceof Variable)) {
                 termStack.push(currentTerm2);
                 termStack.push(currentTerm1);
-            } else if (currentTerm2.getDomain().contains(
-                    currentTerm1.toString())) {
+            } else if (currentTerm2.contains(currentTerm1)) {
                 return UnificationResult.notUnifiable();
             } else {
                 composition(

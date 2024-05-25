@@ -76,7 +76,7 @@ final class TermDagParser {
         Token token = tokenIterator.next();
         Term term;
         if (token.tokenType() == Token.Type.FUNCTIONAL_SYMBOL) {
-            term = new FunctionalSymbolTerm(token.toString(), parseArgs(tokenIterator));
+            term = new TermWithArgs(token.toString(), parseArgs(tokenIterator));
         } else {
             term = Term.fromToken(token);
         }

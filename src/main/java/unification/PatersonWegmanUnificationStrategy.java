@@ -1,12 +1,12 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.ConstantTerm;
+import syntax.Constant;
 import syntax.FunctionalSymbolFirstTermIterator;
-import syntax.FunctionalSymbolTerm;
+import syntax.TermWithArgs;
 import syntax.Term;
 import syntax.TermPair;
-import syntax.VariableTerm;
+import syntax.Variable;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -17,9 +17,7 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
 
 /**
  * An implementation of a linear unification algorithm by Paterson and Wegman.
@@ -101,11 +99,11 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
                 }
             }
             if (!currentTerm.equals(term)) {
-                if (currentTerm instanceof VariableTerm) {
+                if (currentTerm instanceof Variable) {
                     bindingList.put(currentTerm, term);
-                } else if (currentTerm instanceof FunctionalSymbolTerm) {
-                    Iterator<Term> currentTermChildren = currentTerm.getChildren().listIterator();
-                    Iterator<Term> termChildren = term.getChildren().listIterator();
+                } else if (currentTerm instanceof TermWithArgs currentTermWithArgs) {
+                    Iterator<Term> currentTermChildren = currentTermWithArgs.getChildren().listIterator();
+                    Iterator<Term> termChildren = ((TermWithArgs) term).getChildren().listIterator();
                     while (currentTermChildren.hasNext() && termChildren.hasNext()) {
                         createLink(currentTermChildren.next(), termChildren.next());
                     }
@@ -126,10 +124,10 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
      *         or constant terms.
      */
     private boolean areFuncsOrConstants(Term term1, Term term2) {
-        return (term1 instanceof FunctionalSymbolTerm &&
-                term2 instanceof FunctionalSymbolTerm) ||
-                (term1 instanceof ConstantTerm &&
-                 term2 instanceof ConstantTerm);
+        return (term1 instanceof TermWithArgs &&
+                term2 instanceof TermWithArgs) ||
+                (term1 instanceof Constant &&
+                 term2 instanceof Constant);
     }
 
     /**

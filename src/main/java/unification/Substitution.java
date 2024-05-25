@@ -1,10 +1,9 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.ConstantTerm;
-import syntax.FunctionalSymbolTerm;
+import syntax.TermWithArgs;
 import syntax.Term;
-import syntax.VariableTerm;
+import syntax.Variable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,17 +88,17 @@ public interface Substitution {
     default Term instantiateVariables(@NotNull final Term term) {
         Objects.requireNonNull(term);
 
-        if (term instanceof ConstantTerm)
-            return term;
-        if (term instanceof VariableTerm) {
+        if (term instanceof TermWithArgs termWithArgs) {
+            List<Term> newChildren = new ArrayList<>(termWithArgs.getChildren().size());
+            for (var child : termWithArgs.getChildren())
+                newChildren.add(instantiateVariables(child));
+
+            return new TermWithArgs(term.getName(), newChildren);
+        }
+        if (term instanceof Variable) {
             return getBinding(term);
         }
-
-        List<Term> newChildren = new ArrayList<>(term.getChildren().size());
-        for (var child : term.getChildren())
-            newChildren.add(instantiateVariables(child));
-
-        return new FunctionalSymbolTerm(term.getName(), newChildren);
+        return term;
     }
 
     /**

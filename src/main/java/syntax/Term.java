@@ -5,12 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A node of first-order term syntax tree.
@@ -31,13 +28,13 @@ public abstract class Term implements Iterable<Term> {
         Objects.requireNonNull(token);
         switch (token.tokenType()) {
             case CONSTANT -> {
-                return new ConstantTerm(token.toString());
+                return new Constant(token.toString());
             }
             case VARIABLE -> {
-                return new VariableTerm(token.toString());
+                return new Variable(token.toString());
             }
             case FUNCTIONAL_SYMBOL -> {
-                return new FunctionalSymbolTerm(token.toString());
+                return new TermWithArgs(token.toString());
             }
             default -> throw new IllegalArgumentException("illegal token type");
         }
@@ -66,19 +63,6 @@ public abstract class Term implements Iterable<Term> {
                 Objects.requireNonNull(termString)
         ));
         return new TermParser(iterator).parseTerm();
-    }
-
-    /**
-     * Constructs a deep copy of the provided term.
-     *
-     * @param term a term to copy.
-     * @return deep copy of this term.
-     */
-    @NotNull
-    public static Term copyOf(@NotNull final Term term) {
-        Objects.requireNonNull(term);
-        final Map<Term, Term> isomorphism = new IdentityHashMap<>();
-        return term.deepCopy(isomorphism);
     }
 
     /**
@@ -122,17 +106,6 @@ public abstract class Term implements Iterable<Term> {
         return Collections.unmodifiableList(parents);
     }
 
-    /**
-     * Returns a list that contains children nodes of this node.
-     * Note that returned list is immutable.
-     *
-     * @return immutable list of children term nodes
-     * @throws UnsupportedOperationException if this term is leaf one
-     */
-    @NotNull
-    public List<Term> getChildren() {
-        throw new UnsupportedOperationException();
-    }
 
     /**
      * Recursively builds string representation of syntax tree
@@ -143,16 +116,6 @@ public abstract class Term implements Iterable<Term> {
      */
     @NotNull
     protected abstract StringBuilder constructTermString(@NotNull final StringBuilder sb);
-
-    /**
-     * Internal method to build deep copy of this term.
-     *
-     * @param isomorphism a map that contains unique instances of
-     *                    every subterm of this term.
-     * @return deep copy of this term.
-     */
-    @NotNull
-    protected abstract Term deepCopy(@NotNull final Map<Term, Term> isomorphism);
 
     /**
      * Returns true if the specified term is subterm of this term
@@ -168,17 +131,6 @@ public abstract class Term implements Iterable<Term> {
         }
         return false;
     }
-
-    /**
-     * Returns a set of variables that are present in this term.
-     * Every variable in the domain is represented as string.
-     * Returned set is empty If term contains no variables.
-     * Note that returned set is immutable.
-     *
-     * @return immutable set of variables
-     */
-    @NotNull
-    public abstract Set<String> getDomain();
 
     /**
      * Returns the name of this term node. Name has the following format:

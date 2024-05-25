@@ -2,7 +2,7 @@ package unification;
 
 import org.jetbrains.annotations.NotNull;
 import syntax.Term;
-import syntax.VariableTerm;
+import syntax.Variable;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ record SingleSubstitution (
 ) implements Substitution {
     @Override
     public Term getBinding(Term variable) {
-        if (    variable instanceof VariableTerm &&
+        if (    variable instanceof Variable &&
                 this.variable.nameEquals(variable)) {
             return replacement;
         }

@@ -1,18 +1,16 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.ConstantTerm;
-import syntax.FunctionalSymbolTerm;
+import syntax.TermWithArgs;
 import syntax.Term;
 import syntax.TermPair;
-import syntax.VariableTerm;
+import syntax.Variable;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -47,15 +45,16 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
             Term term1, Term term2, Map<Term, Term> bindingList) {
         term1 = findInstantiation(term1);
         term2 = findInstantiation(term2);
-        if (term1 instanceof VariableTerm variable1)
+        if (term1 instanceof Variable variable1)
             unifyVariable(variable1, term2, bindingList);
-        else if (term2 instanceof VariableTerm variable2)
+        else if (term2 instanceof Variable variable2)
             unifyVariable(variable2, term1, bindingList);
         else if (!term1.nameEquals(term2))
             throw new IllegalStateException("Symbol clash");
-        else {
-            List<Term> successorsOfTerm1 = term1.getChildren();
-            List<Term> successorsOfTerm2 = term2.getChildren();
+        else if (term1 instanceof TermWithArgs term1WithArgs &&
+                 term2 instanceof TermWithArgs term2WithArgs) {
+            List<Term> successorsOfTerm1 = term1WithArgs.getChildren();
+            List<Term> successorsOfTerm2 = term2WithArgs.getChildren();
             int successorCount = successorsOfTerm1.size();
             for (int i = 0; i < successorCount; i++) {
                 Term ithSuccessorOfTerm1 = successorsOfTerm1.get(i);
@@ -68,7 +67,7 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
         }
     }
 
-    private void unifyVariable(VariableTerm variable, Term term,  Map<Term, Term> bindingList) {
+    private void unifyVariable(Variable variable, Term term, Map<Term, Term> bindingList) {
         if (occurs(variable, term))
             throw new IllegalStateException("Occurs check");
         bindingList.put(variable, term);
@@ -89,12 +88,12 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
     }
 
     private boolean occursRecursive(Term term1, Term term2, Set<Term> visited) {
-        if (!(term2 instanceof FunctionalSymbolTerm))
+        if (!(term2 instanceof TermWithArgs term2WithArgs))
             return term1 == term2;
         if (visited.contains(term2))
             return false;
         visited.add(term2);
-        for (Term child : term2.getChildren()) {
+        for (Term child : term2WithArgs.getChildren()) {
             if (occursRecursive(term1, findInstantiation(child), visited))
                 return true;
         }

@@ -5,23 +5,21 @@ import syntax.Term;
 
 import java.util.Map;
 
-class IdentitySubstitution implements Substitution {
-    static final Substitution INSTANCE = new IdentitySubstitution();
+enum IdentitySubstitution implements Substitution {
+    INSTANCE {
+        @Override
+        public Term getBinding(Term variable) {
+            return variable;
+        }
 
-    private IdentitySubstitution() {}
+        @Override
+        public @NotNull Term instantiateVariables(@NotNull Term term) {
+            return term;
+        }
 
-    @Override
-    public Term getBinding(Term variable) {
-        return variable;
-    }
-
-    @Override
-    public @NotNull Term instantiateVariables(@NotNull Term term) {
-        return term;
-    }
-
-    @Override
-    public @NotNull Map<Term, Term> domain() {
-        return Map.of();
-    }
+        @Override
+        public @NotNull Map<Term, Term> domain() {
+            return Map.of();
+        }
+    };
 }
