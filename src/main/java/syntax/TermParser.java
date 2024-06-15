@@ -63,7 +63,7 @@ final class TermParser {
         }
         Token token = tokenIterator.next();
         if (token.tokenType() == Token.Type.FUNCTIONAL_SYMBOL) {
-            return new FunctionalSymbolTerm(token.toString(), parseArguments());
+            return new TermWithArgs(token.toString(), parseArguments());
         }
         return Term.fromToken(token);
     }

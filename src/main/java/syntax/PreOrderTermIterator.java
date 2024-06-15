@@ -52,8 +52,8 @@ final class PreOrderTermIterator implements Iterator<Term> {
             firstTime = false;
             return currentTerm;
         }
-        if (currentTerm instanceof FunctionalSymbolTerm) {
-            List<Term> children = currentTerm.getChildren();
+        if (currentTerm instanceof TermWithArgs currentTermWithArgs) {
+            List<Term> children = currentTermWithArgs.getArgs();
             ListIterator<Term> iterator =
                     children.listIterator(children.size());
             while (iterator.hasPrevious()) {

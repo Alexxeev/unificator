@@ -47,8 +47,8 @@ public class FunctionalSymbolFirstTermIterator implements Iterator<Term> {
 
     private Term nextInternal() {
         Term currentTerm = nodeQueue.remove();
-        if (currentTerm instanceof FunctionalSymbolTerm) {
-            nodeQueue.addAll(currentTerm.getChildren());
+        if (currentTerm instanceof TermWithArgs currentTermWithArgs) {
+            nodeQueue.addAll(currentTermWithArgs.getArgs());
         }
         return currentTerm;
     }
@@ -61,7 +61,7 @@ public class FunctionalSymbolFirstTermIterator implements Iterator<Term> {
             return varQueue.remove();
         }
         Term currentTerm = nextInternal();
-        while (currentTerm instanceof VariableTerm) {
+        while (currentTerm instanceof Variable) {
             varQueue.add(currentTerm);
             if (nodeQueue.isEmpty())
                 return varQueue.remove();

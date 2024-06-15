@@ -1,16 +1,17 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.ConstantTerm;
-import syntax.FunctionalSymbolTerm;
+import syntax.TermWithArgs;
 import syntax.Term;
 import syntax.TermPair;
-import syntax.VariableTerm;
+import syntax.Variable;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 
 /**
  * A more efficient implementation of Robinson's unification algorithm
@@ -19,17 +20,18 @@ import java.util.Objects;
  * substituted with term.
  */
 public class PolynomialRobinsonUnificationStrategy implements UnificationStrategy {
+    private final Map<Term, Term> instantiations = new IdentityHashMap<>();
+
     @Override
     public @NotNull UnificationResult findUnifier(
             @NotNull final TermPair termPair) {
-        TermPair termPairCopy = TermPair.copyOf(Objects.requireNonNull(termPair));
         Map<Term, Term> bindingList = new HashMap<>();
         try {
-            findUnifierRecursive(termPairCopy.term1(), termPairCopy.term2(), bindingList);
+            findUnifierRecursive(termPair.term1(), termPair.term2(), bindingList);
         } catch (IllegalStateException e) {
             return UnificationResult.notUnifiable();
         }
-        return UnificationResult.unifiable(Substitution.of(bindingList));
+        return UnificationResult.unifiable(Substitution.fromTriangularForm(bindingList));
     }
 
     /**
@@ -41,51 +43,60 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
      */
     private void findUnifierRecursive(
             Term term1, Term term2, Map<Term, Term> bindingList) {
-        if (term1.equals(term2)) {
-            //Do nothing
-        } else if (term1 instanceof FunctionalSymbolTerm
-                && term2 instanceof FunctionalSymbolTerm) {
-            if (!term1.getName().equals(term2.getName())) {
-                throw new IllegalStateException("Symbol clash");
+        term1 = findInstantiation(term1);
+        term2 = findInstantiation(term2);
+        if (term1 instanceof Variable variable1)
+            unifyVariable(variable1, term2, bindingList);
+        else if (term2 instanceof Variable variable2)
+            unifyVariable(variable2, term1, bindingList);
+        else if (!term1.nameEquals(term2))
+            throw new IllegalStateException("Symbol clash");
+        else if (term1 instanceof TermWithArgs term1WithArgs &&
+                 term2 instanceof TermWithArgs term2WithArgs) {
+            List<Term> successorsOfTerm1 = term1WithArgs.getArgs();
+            List<Term> successorsOfTerm2 = term2WithArgs.getArgs();
+            int successorCount = successorsOfTerm1.size();
+            for (int i = 0; i < successorCount; i++) {
+                Term ithSuccessorOfTerm1 = successorsOfTerm1.get(i);
+                Term ithSuccessorOfTerm2 = successorsOfTerm2.get(i);
+                if (ithSuccessorOfTerm1 == ithSuccessorOfTerm2)
+                    continue;
+                findUnifierRecursive(ithSuccessorOfTerm1, ithSuccessorOfTerm2, bindingList);
             }
-            List<Term> children1 = term1.getChildren();
-            List<Term> children2 = term2.getChildren();
-            if (children1.size() != children2.size()) {
-                throw new IllegalStateException("Symbol clash");
-            }
-            for (int i = 0; i < children1.size(); i++) {
-                findUnifierRecursive(
-                        children1.get(i),
-                        children2.get(i),
-                        bindingList);
-            }
-        } else if (term1 instanceof ConstantTerm
-                && term2 instanceof ConstantTerm) {
-            if (!term1.getName().equals(term2.getName())) {
-                throw new IllegalStateException("Symbol clash");
-            }
-        } else if (!(term1 instanceof VariableTerm)) {
-            findUnifierRecursive(term2, term1, bindingList);
-        } else if (term2.contains(term1)) {
-            throw new IllegalStateException("Occurs check");
-        } else {
-            bindingList.put(term1, term2);
-            replace(term1, term2);
+            instantiations.put(term1, term2);
         }
     }
 
-    /**
-     * Moves parent nodes of the {@code term} to the {@code replacement}.
-     * As a result of this operation {@code term} will be isolated.
-     *
-     * @param term term to isolate
-     * @param replacement term to move parents to
-     */
-    private void replace(Term term, Term replacement) {
-        for (Term parent : term.getParents()) {
-            parent.replaceChild(term, replacement);
+    private void unifyVariable(Variable variable, Term term, Map<Term, Term> bindingList) {
+        if (occurs(variable, term))
+            throw new IllegalStateException("Occurs check");
+        bindingList.put(variable, term);
+        instantiations.put(variable, term);
+    }
+
+    private Term findInstantiation(Term term) {
+        Term result = term;
+        while (instantiations.containsKey(result)) {
+            result = instantiations.get(result);
         }
-        replacement.addParents(term.getParents());
-        term.removeParents();
+        return result;
+    }
+
+    private boolean occurs(Term term1, Term term2) {
+        Set<Term> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+        return occursRecursive(term1, term2, visited);
+    }
+
+    private boolean occursRecursive(Term term1, Term term2, Set<Term> visited) {
+        if (!(term2 instanceof TermWithArgs term2WithArgs))
+            return term1 == term2;
+        if (visited.contains(term2))
+            return false;
+        visited.add(term2);
+        for (Term child : term2WithArgs.getArgs()) {
+            if (occursRecursive(term1, findInstantiation(child), visited))
+                return true;
+        }
+        return false;
     }
 }

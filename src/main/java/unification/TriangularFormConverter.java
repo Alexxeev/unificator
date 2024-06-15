@@ -1,10 +1,10 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.ConstantTerm;
-import syntax.FunctionalSymbolTerm;
+import syntax.Constant;
+import syntax.TermWithArgs;
 import syntax.Term;
-import syntax.VariableTerm;
+import syntax.Variable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -87,20 +87,22 @@ class TriangularFormConverter {
         if (term == null) {
             return null;
         }
-        if (term instanceof VariableTerm) {
+        if (term instanceof Variable) {
             return exploreVariable(term);
         }
-        if (term instanceof ConstantTerm) {
+        if (term instanceof Constant) {
             return term;
         }
         if (ready.containsKey(term)) {
             return ready.get(term);
         }
-        List<Term> result = exploreArgs(term.getChildren());
-        if (result.equals(term.getChildren())) {
-            ready.put(term, term);
-        } else {
-            ready.put(term, new FunctionalSymbolTerm(term.getName(), result));
+        if (term instanceof TermWithArgs termWithArgs) {
+            List<Term> result = exploreArgs(termWithArgs.getArgs());
+            if (result.equals(termWithArgs.getArgs())) {
+                ready.put(termWithArgs, termWithArgs);
+            } else {
+                ready.put(termWithArgs, new TermWithArgs(termWithArgs.getName(), result));
+            }
         }
         return ready.get(term);
 

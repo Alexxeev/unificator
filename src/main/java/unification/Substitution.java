@@ -1,14 +1,12 @@
 package unification;
 
 import org.jetbrains.annotations.NotNull;
-import syntax.ConstantTerm;
-import syntax.FunctionalSymbolTerm;
+import syntax.TermWithArgs;
 import syntax.Term;
-import syntax.VariableTerm;
+import syntax.Variable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -40,7 +38,7 @@ public interface Substitution {
      */
     @NotNull
     static Substitution identity() {
-        return new ListSubstitution(Map.of());
+        return IdentitySubstitution.INSTANCE;
     }
 
     /**
@@ -55,9 +53,10 @@ public interface Substitution {
     static Substitution of(
             @NotNull final Term variable,
             @NotNull final Term replacementTerm) {
-        return new ListSubstitution(Map.of(
+        return new SingleSubstitution(
                 Objects.requireNonNull(variable),
-                Objects.requireNonNull(replacementTerm)));
+                Objects.requireNonNull(replacementTerm)
+        );
     }
 
     /**
@@ -68,8 +67,12 @@ public interface Substitution {
      */
     @NotNull
     static Substitution of(final @NotNull Map<Term, Term> domain) {
-        return new ListSubstitution(Objects.requireNonNull(domain));
+        return new ListSubstitution(
+                Collections.unmodifiableMap(
+                        Objects.requireNonNull(domain)));
     }
+
+    Term getBinding(Term variable);
 
     /**
      * Applies substitution to the copy of the provided term.
@@ -82,47 +85,21 @@ public interface Substitution {
      *         replaced by corresponding terms.
      */
     @NotNull
-    Term instantiateVariables(Term term);
+    default Term instantiateVariables(@NotNull final Term term) {
+        Objects.requireNonNull(term);
 
-    /**
-     * Applies substitution to the provided term.
-     * Returned term will have all instances of variables
-     * contained in the domain of substitution replaced by
-     * corresponding terms
-     * <p>
-     * Note: this operation is destructive and modifies the
-     * term if the term contains functional symbols
-     *
-     * @param term A term to substitute variables in
-     * @return Term with variables in the domain of this substitution
-     *         replaced by corresponding terms.
-     */
-    @NotNull
-    Term instantiateVariablesInPlace(Term term);
+        if (term instanceof TermWithArgs termWithArgs) {
+            List<Term> newChildren = new ArrayList<>(termWithArgs.getArgs().size());
+            for (var child : termWithArgs.getArgs())
+                newChildren.add(instantiateVariables(child));
 
-    /**
-     * Performs a composition operation on this substitution
-     * with provided substitution.
-     * @param other A substitution to compose this substitution with.
-     * @return Result of composition of this substitution with
-     *         other substitution.
-     */
-    @NotNull
-    Substitution composition(@NotNull final Substitution other);
-
-    /**
-     * Performs a composition operation on this substitution
-     * with other substitution defined by provided variable-term
-     * pair.
-     * @param variable a variable
-     * @param replacementTerm a term
-     * @return Result of composition of this substitution with
-     *         other substitution.
-     */
-    @NotNull
-    Substitution composition(
-            @NotNull final Term variable,
-            @NotNull final Term replacementTerm);
+            return new TermWithArgs(term.getName(), newChildren);
+        }
+        if (term instanceof Variable) {
+            return getBinding(term);
+        }
+        return term;
+    }
 
     /**
      * Returns a map which entries are pairs of variables and

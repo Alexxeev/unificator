@@ -4,10 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.text.CharacterIterator;
-import java.text.StringCharacterIterator;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class TermParserTest {
@@ -33,7 +29,7 @@ class TermParserTest {
 
         assertEquals(termString1, actualPair.term1().toString());
         assertEquals(termString2, actualPair.term2().toString());
-        Term child = actualPair.term1().getChildren().get(0);
+        Term child = ((TermWithArgs) actualPair.term1()).getArgs().get(0);
         assertSame(child.getParents().get(0), actualPair.term1());
         assertSame(child, actualPair.term2());
     }
