@@ -1,5 +1,8 @@
+import org.openjdk.jmh.results.format.ResultFormat
+
 plugins {
     id("java")
+    id("me.champeau.jmh") version "0.7.2"
     application
 }
 
@@ -19,6 +22,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testImplementation("org.openjdk.jmh:jmh-core:1.37")
+    testImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.37")
     implementation("org.jetbrains:annotations:24.1.0")
 }
 
@@ -30,4 +35,8 @@ tasks.jar {
     manifest {
         attributes(mapOf("Main-Class" to "Main"))
     }
+}
+
+jmh {
+    resultFormat = "csv"
 }
