@@ -89,8 +89,8 @@ public interface Substitution {
         Objects.requireNonNull(term);
 
         if (term instanceof TermWithArgs termWithArgs) {
-            List<Term> newChildren = new ArrayList<>(termWithArgs.getChildren().size());
-            for (var child : termWithArgs.getChildren())
+            List<Term> newChildren = new ArrayList<>(termWithArgs.getArgs().size());
+            for (var child : termWithArgs.getArgs())
                 newChildren.add(instantiateVariables(child));
 
             return new TermWithArgs(term.getName(), newChildren);

@@ -102,8 +102,8 @@ public final class PatersonWegmanUnificationStrategy implements UnificationStrat
                 if (currentTerm instanceof Variable) {
                     bindingList.put(currentTerm, term);
                 } else if (currentTerm instanceof TermWithArgs currentTermWithArgs) {
-                    Iterator<Term> currentTermChildren = currentTermWithArgs.getChildren().listIterator();
-                    Iterator<Term> termChildren = ((TermWithArgs) term).getChildren().listIterator();
+                    Iterator<Term> currentTermChildren = currentTermWithArgs.getArgs().listIterator();
+                    Iterator<Term> termChildren = ((TermWithArgs) term).getArgs().listIterator();
                     while (currentTermChildren.hasNext() && termChildren.hasNext()) {
                         createLink(currentTermChildren.next(), termChildren.next());
                     }

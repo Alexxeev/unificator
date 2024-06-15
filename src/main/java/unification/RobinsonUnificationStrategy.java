@@ -44,8 +44,8 @@ public class RobinsonUnificationStrategy implements UnificationStrategy {
                     && currentTerm2 instanceof TermWithArgs currentTerm2WithArgs) {
                 String name1 = currentTerm1.getName();
                 String name2 = currentTerm2.getName();
-                List<Term> children1 = currentTerm1WithArgs.getChildren();
-                List<Term> children2 = currentTerm2WithArgs.getChildren();
+                List<Term> children1 = currentTerm1WithArgs.getArgs();
+                List<Term> children2 = currentTerm2WithArgs.getArgs();
                 if (!name1.equals(name2)
                         || children1.size() != children2.size()) {
                     return UnificationResult.notUnifiable();

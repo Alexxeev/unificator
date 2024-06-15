@@ -53,7 +53,7 @@ final class PreOrderTermIterator implements Iterator<Term> {
             return currentTerm;
         }
         if (currentTerm instanceof TermWithArgs currentTermWithArgs) {
-            List<Term> children = currentTermWithArgs.getChildren();
+            List<Term> children = currentTermWithArgs.getArgs();
             ListIterator<Term> iterator =
                     children.listIterator(children.size());
             while (iterator.hasPrevious()) {

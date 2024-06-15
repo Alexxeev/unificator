@@ -29,7 +29,7 @@ class TermParserTest {
 
         assertEquals(termString1, actualPair.term1().toString());
         assertEquals(termString2, actualPair.term2().toString());
-        Term child = ((TermWithArgs) actualPair.term1()).getChildren().get(0);
+        Term child = ((TermWithArgs) actualPair.term1()).getArgs().get(0);
         assertSame(child.getParents().get(0), actualPair.term1());
         assertSame(child, actualPair.term2());
     }

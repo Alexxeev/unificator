@@ -53,8 +53,8 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
             throw new IllegalStateException("Symbol clash");
         else if (term1 instanceof TermWithArgs term1WithArgs &&
                  term2 instanceof TermWithArgs term2WithArgs) {
-            List<Term> successorsOfTerm1 = term1WithArgs.getChildren();
-            List<Term> successorsOfTerm2 = term2WithArgs.getChildren();
+            List<Term> successorsOfTerm1 = term1WithArgs.getArgs();
+            List<Term> successorsOfTerm2 = term2WithArgs.getArgs();
             int successorCount = successorsOfTerm1.size();
             for (int i = 0; i < successorCount; i++) {
                 Term ithSuccessorOfTerm1 = successorsOfTerm1.get(i);
@@ -93,7 +93,7 @@ public class PolynomialRobinsonUnificationStrategy implements UnificationStrateg
         if (visited.contains(term2))
             return false;
         visited.add(term2);
-        for (Term child : term2WithArgs.getChildren()) {
+        for (Term child : term2WithArgs.getArgs()) {
             if (occursRecursive(term1, findInstantiation(child), visited))
                 return true;
         }

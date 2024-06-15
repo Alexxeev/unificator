@@ -97,8 +97,8 @@ class TriangularFormConverter {
             return ready.get(term);
         }
         if (term instanceof TermWithArgs termWithArgs) {
-            List<Term> result = exploreArgs(termWithArgs.getChildren());
-            if (result.equals(termWithArgs.getChildren())) {
+            List<Term> result = exploreArgs(termWithArgs.getArgs());
+            if (result.equals(termWithArgs.getArgs())) {
                 ready.put(termWithArgs, termWithArgs);
             } else {
                 ready.put(termWithArgs, new TermWithArgs(termWithArgs.getName(), result));

@@ -15,7 +15,7 @@ public final class TermWithArgs extends Term {
     /**
      * A list that contains children nodes of this term
      */
-    private final List<Term> children;
+    private final List<Term> args;
 
     /**
      * Creates a functional symbol term node with provided name.
@@ -36,16 +36,16 @@ public final class TermWithArgs extends Term {
             final @NotNull List<Term> arguments) {
         super(name);
         arguments.forEach(arg -> arg.addParent(this));
-        this.children = arguments;
+        this.args = arguments;
     }
 
     @Override
     protected @NotNull StringBuilder constructTermString(@NotNull StringBuilder sb) {
         sb.append(getName());
         sb.append("(");
-        int childrenCount = children.size();
+        int childrenCount = args.size();
         for (int i = 0; i < childrenCount; i++) {
-            children.get(i).constructTermString(sb);
+            args.get(i).constructTermString(sb);
             if (i < childrenCount - 1) {
                 sb.append(",");
             }
@@ -54,18 +54,18 @@ public final class TermWithArgs extends Term {
         return sb;
     }
 
-    public @NotNull List<Term> getChildren() {
-        return Collections.unmodifiableList(children);
+    public @NotNull List<Term> getArgs() {
+        return Collections.unmodifiableList(args);
     }
 
     @Override
     public boolean isLeafNode() {
-        return getChildren().isEmpty();
+        return getArgs().isEmpty();
     }
 
     @Override
     public int hashCode() {
-        return 31 * getName().hashCode() + getChildren().hashCode();
+        return 31 * getName().hashCode() + getArgs().hashCode();
     }
 
     @Override
@@ -74,7 +74,7 @@ public final class TermWithArgs extends Term {
             return true;
         if (obj instanceof TermWithArgs termWithArgs) {
             return getName().equals(termWithArgs.getName())
-                    && getChildren().equals(termWithArgs.getChildren());
+                    && getArgs().equals(termWithArgs.getArgs());
         }
         return false;
     }

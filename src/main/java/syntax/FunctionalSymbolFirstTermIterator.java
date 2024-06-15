@@ -48,7 +48,7 @@ public class FunctionalSymbolFirstTermIterator implements Iterator<Term> {
     private Term nextInternal() {
         Term currentTerm = nodeQueue.remove();
         if (currentTerm instanceof TermWithArgs currentTermWithArgs) {
-            nodeQueue.addAll(currentTermWithArgs.getChildren());
+            nodeQueue.addAll(currentTermWithArgs.getArgs());
         }
         return currentTerm;
     }
